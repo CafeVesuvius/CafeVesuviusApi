@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafeVesuviusApi", "CafeVesuviusApi\CafeVesuviusApi.csproj", "{B34E9DA4-9718-470B-B90D-505F1A4E3A0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CafeVesuviusApi", "CafeVesuviusApi\CafeVesuviusApi.csproj", "{B34E9DA4-9718-470B-B90D-505F1A4E3A0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafeVesuviusApiTesting.UnitTest", "CafeVesuviusApiTesting.UnitTest\CafeVesuviusApiTesting.UnitTest.csproj", "{FAC7C3FE-2520-4F48-A3A8-F912FA79FCD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{B34E9DA4-9718-470B-B90D-505F1A4E3A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B34E9DA4-9718-470B-B90D-505F1A4E3A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B34E9DA4-9718-470B-B90D-505F1A4E3A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAC7C3FE-2520-4F48-A3A8-F912FA79FCD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAC7C3FE-2520-4F48-A3A8-F912FA79FCD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAC7C3FE-2520-4F48-A3A8-F912FA79FCD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAC7C3FE-2520-4F48-A3A8-F912FA79FCD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

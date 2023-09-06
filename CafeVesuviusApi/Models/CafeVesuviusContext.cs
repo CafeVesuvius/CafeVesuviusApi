@@ -61,10 +61,10 @@ public partial class CafeVesuviusContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
 
-            entity.HasOne(d => d.Menu).WithMany(p => p.MenuItems)
-                .HasForeignKey(d => d.MenuId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_MenuItem_Menu");
+            //entity.HasOne(d => d.Menu).WithMany(p => p.MenuItems)
+            //    .HasForeignKey(d => d.MenuId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_MenuItem_Menu");
         });
 
         modelBuilder.Entity<Order>(entity =>

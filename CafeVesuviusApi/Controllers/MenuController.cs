@@ -28,20 +28,34 @@ namespace CafeVesuviusApi.Controllers
           {
               return NotFound();
           }
+          
+          Menu menu = await _context.Menus.OrderBy(Menu => Menu.Id).LastAsync();
+          menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
 
-          return await _context.Menus.LastAsync();
+          return Ok(menu);
         }
         
         [Route("Active")]
         [HttpGet]
-        public async Task<ActionResult<Menu>> GetActiveMenu()
+        public async Task<ActionResult<List<Menu>>> GetActiveMenu()
         {
             if (_context.Menus == null)
             {
                 return NotFound();
             }
 
-            return await _context.Menus.OrderBy(menu => menu.Active).FirstAsync();
+            List<Menu> menus = await _context.Menus.Where(Menu => !Menu.Active).ToListAsync();
+            if(menus.Count > 0)
+            {
+                foreach (Menu menu in menus)
+                {
+                    menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
+                }
+            } else
+            {
+                return NotFound();
+            }
+            return Ok(menus);
         }
         
         [Route("Changed")]
@@ -52,8 +66,10 @@ namespace CafeVesuviusApi.Controllers
             {
                 return NotFound();
             }
+            Menu menu = await _context.Menus.OrderBy(menu => menu.Changed).FirstAsync();
+            menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
 
-            return await _context.Menus.OrderBy(menu => menu.Changed).FirstAsync();
+            return Ok(menu);
         }
 
         [Route("All")]
@@ -64,26 +80,37 @@ namespace CafeVesuviusApi.Controllers
             {
                 return NotFound();
             }
-
-            return await _context.Menus.ToListAsync();
+            List<Menu> menus = await _context.Menus.OrderBy(menu => menu.Changed).ToListAsync();
+            if (menus.Count > 0)
+            {
+                foreach (Menu menu in menus)
+                {
+                    menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
+                }
+            } else
+            {
+                return NotFound();
+            }
+            return Ok(menus);
         }
         
         // GET: api/Menu/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Menu>> GetMenuById(long id)
         {
-          if (_context.Menus == null)
-          {
-              return NotFound();
-          }
-            var menu = await _context.Menus.FindAsync(id);
+            if (_context.Menus == null)
+            {
+                return NotFound();
+            }
+            Menu menu = await _context.Menus.FindAsync(id);
 
             if (menu == null)
             {
                 return NotFound();
             }
+            menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
 
-            return menu;
+            return Ok(menu);
         }
 
         // PUT: api/Menu/5
