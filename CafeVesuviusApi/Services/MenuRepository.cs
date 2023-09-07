@@ -1,9 +1,11 @@
 ﻿using CafeVesuviusApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CafeVesuviusApi.Services
 {
-    public class MenuRepository
+    public class MenuRepository : IMenuRepository
     {
         private readonly CafeVesuviusContext _context;
 
@@ -12,82 +14,93 @@ namespace CafeVesuviusApi.Services
             _context = context;
         }
 
-        public Menu GetNewestMenu()
+        public async Task<Menu> GetNewestMenu()
         {
-            Menu? menu = _context.Menus.OrderBy(Menu => Menu.Id).Last();
-            menu.MenuItems = _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToList();
+            Menu? menu = await _context.Menus.OrderBy(Menu => Menu.Id).LastAsync();
+            menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
 
             return menu;
         }
-        public IEnumerable<Menu> GetActiveMenus()
+        public async Task<IEnumerable<Menu>> GetActiveMenus()
         {
-            List<Menu>? menus = _context.Menus.Where(Menu => !Menu.Active).ToList();
+            List<Menu>? menus = await _context.Menus.Where(Menu => Menu.Active).ToListAsync();
             if (menus.Count > 0)
             {
                 foreach (Menu menu in menus)
                 {
-                    menu.MenuItems = _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToList();
+                    menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
                 }
             }
 
             return menus;
         }
-        public Menu GetLastChanged()
+        public async Task<Menu> GetLastChanged()
         {
-            Menu? menu = _context.Menus.OrderBy(menu => menu.Changed).First();
-            menu.MenuItems = _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToList();
+            Menu? menu = await _context.Menus.OrderBy(menu => menu.Changed).FirstAsync();
+            menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
 
             return menu;
         }
 
-        public IEnumerable<Menu> GetAllMenus()
+        public async Task<IEnumerable<Menu>> GetAllMenus()
         {
-            List<Menu>? menus = _context.Menus.OrderBy(menu => menu.Changed).ToList();
+            List<Menu>? menus = await _context.Menus.OrderBy(menu => menu.Changed).ToListAsync();
             if (menus.Count > 0)
             {
                 foreach (Menu menu in menus)
                 {
-                    menu.MenuItems = _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToList();
+                    menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
                 }
             }
-
             return menus;
         }
-        public Menu GetMenuById(long id)
+        public async Task<Menu> GetMenuById(long id)
         {
-            Menu? menu = _context.Menus.Find(id);
+            Menu? menu = await _context.Menus.FindAsync(id);
             if (menu == null)
             {
                 return menu;
             }
-            menu.MenuItems = _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToList();
+            menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
 
             return menu;
         }
 
-        public void UpdateMenu(long id, Menu menu)
+        public async Task<bool> UpdateMenu(long id, Menu menu)
         {
             _context.Entry(menu).State = EntityState.Modified;
 
             try
             {
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MenuExists(id))
+                if (!(_context.Menus?.Any(e => e.Id == id)).GetValueOrDefault())
                 {
-                    return;
-                }
-                else
-                {
-                    throw;
+                    return false;
                 }
             }
+            return true;
         }
-        private bool MenuExists(long id)
+        public async Task<Menu> PostMenu(Menu menu)
         {
-            return (_context.Menus?.Any(e => e.Id == id)).GetValueOrDefault();
+
+            _context.Menus.Add(menu);
+            await _context.SaveChangesAsync();
+
+            return menu;
+        }
+        public async Task<bool> DeleteMenu(long id)
+        {
+            Menu? menu = await _context.Menus.FindAsync(id);
+
+            if (menu == null) return false;
+
+            _context.Menus.Remove(menu);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }
