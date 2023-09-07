@@ -37,7 +37,7 @@ namespace CafeVesuviusApi.Controllers
         
         [Route("Active")]
         [HttpGet]
-        public async Task<ActionResult<List<Menu>>> GetActiveMenu()
+        public async Task<ActionResult<IEnumerable<Menu>>> GetActiveMenu()
         {
             if (_context.Menus == null)
             {
