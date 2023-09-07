@@ -14,18 +14,16 @@ namespace CafeVesuviusApi.Controllers
     [ApiController]
     public class MenuController : ControllerBase
     {
-        private readonly CafeVesuviusContext _context;
         private readonly IMenuRepository _menuRepository;
 
-        public MenuController(CafeVesuviusContext context, IMenuRepository menuRepository)
+        public MenuController(IMenuRepository menuRepository)
         {
-            _context = context;
             _menuRepository = menuRepository;
         }
 
         // GET: api/Menu
         [HttpGet]
-        public async Task<ActionResult<Menu>> GetNewestMenu()
+        public async Task<IActionResult> GetNewestMenu()
         {
           if (await _menuRepository.GetAllMenus() == null) return NotFound();
           return Ok(await _menuRepository.GetNewestMenu());
@@ -33,7 +31,7 @@ namespace CafeVesuviusApi.Controllers
         
         [Route("Active")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Menu>>> GetActiveMenu()
+        public async Task<IActionResult> GetActiveMenu()
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
             return Ok(await _menuRepository.GetActiveMenus());
@@ -41,7 +39,7 @@ namespace CafeVesuviusApi.Controllers
         
         [Route("Changed")]
         [HttpGet]
-        public async Task<ActionResult<Menu>> GetChangedMenu()
+        public async Task<IActionResult> GetChangedMenu()
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
             return Ok(await _menuRepository.GetLastChanged());
@@ -49,7 +47,7 @@ namespace CafeVesuviusApi.Controllers
 
         [Route("All")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Menu>>> GetAllMenu()
+        public async Task<IActionResult> GetAllMenu()
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
             return Ok(await _menuRepository.GetAllMenus());
@@ -57,7 +55,7 @@ namespace CafeVesuviusApi.Controllers
         
         // GET: api/Menu/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Menu>> GetMenuById(long id)
+        public async Task<IActionResult> GetMenuById(long id)
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
             Menu menu = await _menuRepository.GetMenuById(id);
@@ -85,13 +83,13 @@ namespace CafeVesuviusApi.Controllers
         // POST: api/Menu
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Menu>> PostMenu(Menu menu)
+        public async Task<IActionResult> PostMenu(Menu menu)
         {
             if (await _menuRepository.GetAllMenus() == null)
             {
                 return Problem("Entity set 'CafeVesuviusContext.Menus'  is null.");
             }
-            return await _menuRepository.PostMenu(menu); ;
+            return Ok(await _menuRepository.PostMenu(menu));
         }
 
         // DELETE: api/Menu/5
