@@ -3,7 +3,7 @@ using CafeVesuviusApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("CafeVesuviusCSC");
+var connectionString = builder.Configuration.GetConnectionString("CafeVesuvius");
 
 // Add services to the container.
 
