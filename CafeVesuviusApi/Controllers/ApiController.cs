@@ -9,12 +9,10 @@ using CafeVesuviusApi.Models;
 
 namespace CafeVesuviusApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Fox")]
     [ApiController]
     public class ApiController : ControllerBase
     {
-        // GET: api/Menu
-        [Route("Fox")]
         [HttpGet]
         public async Task<ActionResult<Menu>> GetFox()
         {
