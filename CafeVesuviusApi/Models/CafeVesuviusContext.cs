@@ -30,7 +30,7 @@ public partial class CafeVesuviusContext : DbContext
     public virtual DbSet<ReservationDiningTable> ReservationDiningTables { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:CafeVesuviusCSC");
+        => optionsBuilder.UseSqlServer("Name=ConnectionString");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
