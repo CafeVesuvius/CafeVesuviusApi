@@ -16,8 +16,5 @@ public partial class MenuItem
     public bool Active { get; set; }
 
     public long MenuId { get; set; }
-
-    public virtual Menu Menu { get; set; } = null!;
-
     public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
 }

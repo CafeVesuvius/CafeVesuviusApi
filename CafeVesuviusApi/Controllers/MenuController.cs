@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Services;
 
 namespace CafeVesuviusApi.Controllers
 {
@@ -13,77 +14,55 @@ namespace CafeVesuviusApi.Controllers
     [ApiController]
     public class MenuController : ControllerBase
     {
-        private readonly CafeVesuviusContext _context;
+        private readonly IMenuRepository _menuRepository;
 
-        public MenuController(CafeVesuviusContext context)
+        public MenuController(IMenuRepository menuRepository)
         {
-            _context = context;
+            _menuRepository = menuRepository;
         }
 
         // GET: api/Menu
         [HttpGet]
-        public async Task<ActionResult<Menu>> GetNewestMenu()
+        public async Task<IActionResult> GetNewestMenu()
         {
-          if (_context.Menus == null)
-          {
-              return NotFound();
-          }
-
-          return await _context.Menus.LastAsync();
+          if (await _menuRepository.GetAllMenus() == null) return NotFound();
+          return Ok(await _menuRepository.GetNewestMenu());
         }
         
         [Route("Active")]
         [HttpGet]
-        public async Task<ActionResult<Menu>> GetActiveMenu()
+        public async Task<IActionResult> GetActiveMenu()
         {
-            if (_context.Menus == null)
-            {
-                return NotFound();
-            }
-
-            return await _context.Menus.OrderBy(menu => menu.Active).FirstAsync();
+            if (await _menuRepository.GetAllMenus() == null) return NotFound();
+            return Ok(await _menuRepository.GetActiveMenus());
         }
         
         [Route("Changed")]
         [HttpGet]
-        public async Task<ActionResult<Menu>> GetChangedMenu()
+        public async Task<IActionResult> GetChangedMenu()
         {
-            if (_context.Menus == null)
-            {
-                return NotFound();
-            }
-
-            return await _context.Menus.OrderBy(menu => menu.Changed).FirstAsync();
+            if (await _menuRepository.GetAllMenus() == null) return NotFound();
+            return Ok(await _menuRepository.GetLastChanged());
         }
 
         [Route("All")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Menu>>> GetAllMenu()
+        public async Task<IActionResult> GetAllMenu()
         {
-            if (_context.Menus == null)
-            {
-                return NotFound();
-            }
-
-            return await _context.Menus.ToListAsync();
+            if (await _menuRepository.GetAllMenus() == null) return NotFound();
+            return Ok(await _menuRepository.GetAllMenus());
         }
         
         // GET: api/Menu/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Menu>> GetMenuById(long id)
+        public async Task<IActionResult> GetMenuById(long id)
         {
-          if (_context.Menus == null)
-          {
-              return NotFound();
-          }
-            var menu = await _context.Menus.FindAsync(id);
+            if (await _menuRepository.GetAllMenus() == null) return NotFound();
+            Menu menu = await _menuRepository.GetMenuById(id);
+            
+            if(menu == null) return NotFound();
 
-            if (menu == null)
-            {
-                return NotFound();
-            }
-
-            return menu;
+            return Ok(menu);
         }
 
         // PUT: api/Menu/5
@@ -95,66 +74,33 @@ namespace CafeVesuviusApi.Controllers
             {
                 return BadRequest();
             }
+            bool succes = await _menuRepository.UpdateMenu(id, menu);
 
-            _context.Entry(menu).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MenuExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            if (!succes) return NotFound();
             return NoContent();
         }
 
         // POST: api/Menu
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Menu>> PostMenu(Menu menu)
+        public async Task<IActionResult> PostMenu(Menu menu)
         {
-          if (_context.Menus == null)
-          {
-              return Problem("Entity set 'CafeVesuviusContext.Menus'  is null.");
-          }
-            _context.Menus.Add(menu);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetMenu", new { id = menu.Id }, menu);
+            if (await _menuRepository.GetAllMenus() == null)
+            {
+                return Problem("Entity set 'CafeVesuviusContext.Menus'  is null.");
+            }
+            return Ok(await _menuRepository.PostMenu(menu));
         }
 
         // DELETE: api/Menu/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMenu(long id)
         {
-            if (_context.Menus == null)
-            {
-                return NotFound();
-            }
-            var menu = await _context.Menus.FindAsync(id);
-            if (menu == null)
-            {
-                return NotFound();
-            }
+            if (await _menuRepository.GetAllMenus() == null) return NotFound();
 
-            _context.Menus.Remove(menu);
-            await _context.SaveChangesAsync();
-
+            bool succes = await _menuRepository.DeleteMenu(id);
+            if (!succes) return NotFound();
             return NoContent();
-        }
-
-        private bool MenuExists(long id)
-        {
-            return (_context.Menus?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
