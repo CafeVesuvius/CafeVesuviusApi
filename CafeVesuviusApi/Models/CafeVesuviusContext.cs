@@ -115,10 +115,10 @@ public partial class CafeVesuviusContext : DbContext
             entity.Property(e => e.DiningTableId).HasColumnName("DiningTableID");
             entity.Property(e => e.ReservationId).HasColumnName("ReservationID");
 
-            entity.HasOne(d => d.DiningTable).WithMany(p => p.ReservationDiningTables)
-                .HasForeignKey(d => d.DiningTableId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ReservationDiningTable_DiningTable");
+            // entity.HasOne(d => d.DiningTable).WithMany(p => p.ReservationDiningTables)
+            //     .HasForeignKey(d => d.DiningTableId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_ReservationDiningTable_DiningTable");
 
             entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationDiningTables)
                 .HasForeignKey(d => d.ReservationId)
