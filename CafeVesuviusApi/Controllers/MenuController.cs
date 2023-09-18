@@ -20,8 +20,7 @@ namespace CafeVesuviusApi.Controllers
         {
             _menuRepository = menuRepository;
         }
-
-        // GET: api/Menu
+        
         [HttpGet]
         public async Task<IActionResult> GetNewestMenu()
         {
@@ -50,7 +49,6 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _menuRepository.GetAllMenus());
         }
         
-        // GET: api/Menu/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMenuById(long id)
         {
@@ -61,9 +59,7 @@ namespace CafeVesuviusApi.Controllers
 
             return Ok(menu);
         }
-
-        // PUT: api/Menu/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMenu(long id, Menu menu)
         {
@@ -89,9 +85,7 @@ namespace CafeVesuviusApi.Controllers
             if (!success) return NotFound();
             return NoContent();
         }
-
-        // POST: api/Menu
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [HttpPost]
         public async Task<IActionResult> PostMenu(Menu menu)
         {
@@ -102,8 +96,6 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _menuRepository.PostMenu(menu));
         }
         
-        // POST: api/Menu
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("Item")]
         [HttpPost]
         public async Task<IActionResult> PostMenuItem(MenuItem menuItem)
@@ -114,8 +106,7 @@ namespace CafeVesuviusApi.Controllers
             }
             return Ok(await _menuRepository.PostMenuItem(menuItem));
         }
-
-        // DELETE: api/Menu/5
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMenu(long id)
         {
@@ -126,7 +117,6 @@ namespace CafeVesuviusApi.Controllers
             return NoContent();
         }
         
-        // DELETE: api/Menu/5
         [HttpDelete("Item/{id}")]
         public async Task<IActionResult> DeleteMenuItem(long id)
         {
