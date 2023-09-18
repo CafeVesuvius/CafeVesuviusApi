@@ -86,10 +86,10 @@ public partial class CafeVesuviusContext : DbContext
             entity.Property(e => e.MenuItemId).HasColumnName("MenuItemID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
-            entity.HasOne(d => d.MenuItem).WithMany(p => p.OrderLines)
-                .HasForeignKey(d => d.MenuItemId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OrderLine_MenuItem");
+            //entity.HasOne(d => d.MenuItem).WithMany(p => p.OrderLines)
+            //    .HasForeignKey(d => d.MenuItemId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_OrderLine_MenuItem");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
                 .HasForeignKey(d => d.OrderId)
