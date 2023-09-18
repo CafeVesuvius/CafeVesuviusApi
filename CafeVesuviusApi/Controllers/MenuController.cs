@@ -20,40 +20,35 @@ namespace CafeVesuviusApi.Controllers
         {
             _menuRepository = menuRepository;
         }
-
-        // GET: api/Menu
+        
         [HttpGet]
         public async Task<IActionResult> GetNewestMenu()
         {
-          if (await _menuRepository.GetAllMenus() == null) return NotFound();
-          return Ok(await _menuRepository.GetNewestMenu());
+            if (await _menuRepository.GetAllMenus() == null) return NotFound();
+            return Ok(await _menuRepository.GetNewestMenu());
         }
         
-        [Route("Active")]
-        [HttpGet]
+        [HttpGet("Active")]
         public async Task<IActionResult> GetActiveMenu()
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
             return Ok(await _menuRepository.GetActiveMenus());
         }
         
-        [Route("Changed")]
-        [HttpGet]
+        [HttpGet("Changed")]
         public async Task<IActionResult> GetChangedMenu()
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
             return Ok(await _menuRepository.GetLastChanged());
         }
-
-        [Route("All")]
-        [HttpGet]
+        
+        [HttpGet("All")]
         public async Task<IActionResult> GetAllMenu()
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
             return Ok(await _menuRepository.GetAllMenus());
         }
         
-        // GET: api/Menu/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMenuById(long id)
         {
@@ -64,9 +59,7 @@ namespace CafeVesuviusApi.Controllers
 
             return Ok(menu);
         }
-
-        // PUT: api/Menu/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMenu(long id, Menu menu)
         {
@@ -74,14 +67,25 @@ namespace CafeVesuviusApi.Controllers
             {
                 return BadRequest();
             }
-            bool succes = await _menuRepository.UpdateMenu(id, menu);
+            bool success = await _menuRepository.UpdateMenu(id, menu);
 
-            if (!succes) return NotFound();
+            if (!success) return NotFound();
             return NoContent();
         }
+        
+        [HttpPut("Item/{id}")]
+        public async Task<IActionResult> PutMenuItem(long id, MenuItem menuItem)
+        {
+            if (id != menuItem.Id)
+            {
+                return BadRequest();
+            }
+            bool success = await _menuRepository.UpdateMenuItem(id, menuItem);
 
-        // POST: api/Menu
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+            if (!success) return NotFound();
+            return NoContent();
+        }
+        
         [HttpPost]
         public async Task<IActionResult> PostMenu(Menu menu)
         {
@@ -91,15 +95,35 @@ namespace CafeVesuviusApi.Controllers
             }
             return Ok(await _menuRepository.PostMenu(menu));
         }
-
-        // DELETE: api/Menu/5
+        
+        [Route("Item")]
+        [HttpPost]
+        public async Task<IActionResult> PostMenuItem(MenuItem menuItem)
+        {
+            if (await _menuRepository.GetAllMenus() == null)
+            {
+                return Problem("Entity set 'CafeVesuviusContext.Menus'  is null.");
+            }
+            return Ok(await _menuRepository.PostMenuItem(menuItem));
+        }
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMenu(long id)
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
 
-            bool succes = await _menuRepository.DeleteMenu(id);
-            if (!succes) return NotFound();
+            bool success = await _menuRepository.DeleteMenu(id);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+        
+        [HttpDelete("Item/{id}")]
+        public async Task<IActionResult> DeleteMenuItem(long id)
+        {
+            if (await _menuRepository.GetAllMenus() == null) return NotFound();
+
+            bool success = await _menuRepository.DeleteMenuItem(id);
+            if (!success) return NotFound();
             return NoContent();
         }
     }

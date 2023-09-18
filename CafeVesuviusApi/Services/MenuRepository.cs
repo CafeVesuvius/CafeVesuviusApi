@@ -83,14 +83,41 @@ namespace CafeVesuviusApi.Services
             }
             return true;
         }
+        
+        public async Task<bool> UpdateMenuItem(long id, MenuItem menuItem)
+        {
+            _context.Entry(menuItem).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!(_context.MenuItems?.Any(e => e.Id == id)).GetValueOrDefault())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
         public async Task<Menu> PostMenu(Menu menu)
         {
-
             _context.Menus.Add(menu);
             await _context.SaveChangesAsync();
 
             return menu;
         }
+
+        public async Task<MenuItem> PostMenuItem(MenuItem menuItem)
+        {
+            _context.MenuItems.Add(menuItem);
+            await _context.SaveChangesAsync();
+
+            return menuItem;
+        }
+
         public async Task<bool> DeleteMenu(long id)
         {
             Menu? menu = await _context.Menus.FindAsync(id);
@@ -98,6 +125,18 @@ namespace CafeVesuviusApi.Services
             if (menu == null) return false;
 
             _context.Menus.Remove(menu);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+        
+        public async Task<bool> DeleteMenuItem(long id)
+        {
+            MenuItem? menuItem = await _context.MenuItems.FindAsync(id);
+
+            if (menuItem == null) return false;
+
+            _context.MenuItems.Remove(menuItem);
             await _context.SaveChangesAsync();
 
             return true;
