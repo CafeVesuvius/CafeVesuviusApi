@@ -156,7 +156,7 @@ public class ReservationRepository : IReservationRepository
 
         foreach (Reservation reservation in reservationsByDate)
         {
-            if ((reservation.Time - reservationTime).TotalHours > 2) continue;
+            if (Math.Abs((reservation.Time - reservationTime).TotalHours) > 2) continue;
             foreach (ReservationDiningTable rdt in reservation.ReservationDiningTables)
             {
                 if (rdt.DiningTableId == 0) continue;
