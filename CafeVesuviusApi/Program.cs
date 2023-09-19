@@ -17,6 +17,7 @@ builder.Services.AddDbContext<CafeVesuviusContext>(x => x.UseSqlServer(connectio
         builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
     }));
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
 var app = builder.Build();
 

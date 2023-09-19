@@ -1,5 +1,4 @@
 ﻿using CafeVesuviusApi.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CafeVesuviusApi.Services
 {
