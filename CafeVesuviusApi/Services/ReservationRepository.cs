@@ -53,16 +53,22 @@ public class ReservationRepository : IReservationRepository
         return reservation;
     }
     
-    public async Task<Reservation> PostReservation(Reservation reservation)
+    public async Task<Reservation?> PostReservation(Reservation reservation)
     {
-        _context.Reservations.Add(reservation);
-        await _context.SaveChangesAsync();
+        DiningTable? reservationTable = GetAvailableTable(reservation.Time);
 
-        foreach (ReservationDiningTable reservationDiningTable in reservation.ReservationDiningTables)
+        if (reservationTable != null)
         {
+            _context.Reservations.Add(reservation);
+            await _context.SaveChangesAsync();
+
+            ReservationDiningTable reservationDiningTable = new();
             reservationDiningTable.ReservationId = reservation.Id;
+            reservationDiningTable.DiningTableId = reservationTable.Id;
+            
+            reservation.ReservationDiningTables.Add(reservationDiningTable);
         }
-        
+        else return null;
         return reservation;
     }
     
