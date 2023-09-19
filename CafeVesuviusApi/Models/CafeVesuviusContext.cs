@@ -39,6 +39,8 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("DiningTable");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Number).HasColumnName("Number");
+            entity.Property(e => e.Seats).HasColumnName("Seats");
         });
 
         modelBuilder.Entity<Menu>(entity =>

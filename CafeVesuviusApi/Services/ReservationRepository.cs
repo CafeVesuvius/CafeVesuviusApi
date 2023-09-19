@@ -102,6 +102,26 @@ public class ReservationRepository : IReservationRepository
         return true;
     }
 
+    public async Task<DiningTable> PostDiningTable(DiningTable diningTable)
+    {
+        _context.DiningTables.Add(diningTable);
+        await _context.SaveChangesAsync();
+
+        return diningTable;
+    }
+    
+    public async Task<bool> DeleteDiningTable(long id)
+    {
+        DiningTable? diningTable = await _context.DiningTables.FindAsync(id);
+
+        if (diningTable == null) return false;
+
+        _context.DiningTables.Remove(diningTable);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+    
     public async Task<IEnumerable<DiningTable>> GetDiningTables()
     {
         List<DiningTable>? tables = await _context.DiningTables.ToListAsync();

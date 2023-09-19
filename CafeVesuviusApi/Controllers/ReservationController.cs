@@ -53,7 +53,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> PostMenu(Reservation reservation)
+        public async Task<IActionResult> PostReservation(Reservation reservation)
         {
             if (await _reservationRepository.GetReservations() == null)
             {
@@ -63,11 +63,38 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMenu(long id)
+        public async Task<IActionResult> DeleteReservation(long id)
         {
             if (await _reservationRepository.GetReservations() == null) return NotFound();
 
             bool success = await _reservationRepository.DeleteReservation(id);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+        
+        [HttpGet("DiningTable/All")]
+        public async Task<IActionResult> GetDiningTables()
+        {
+            if (await _reservationRepository.GetDiningTables() == null) return NotFound();
+            return Ok(await _reservationRepository.GetDiningTables());
+        }
+        
+        [HttpPost("DiningTable")]
+        public async Task<IActionResult> PostDiningTable(DiningTable diningTable)
+        {
+            if (await _reservationRepository.GetDiningTables() == null)
+            {
+                return Problem("Entity set 'CafeVesuviusContext.Menus'  is null.");
+            }
+            return Ok(await _reservationRepository.PostDiningTable(diningTable));
+        }
+        
+        [HttpDelete("DiningTable/{id}")]
+        public async Task<IActionResult> DeleteDiningTable(long id)
+        {
+            if (await _reservationRepository.GetDiningTables() == null) return NotFound();
+
+            bool success = await _reservationRepository.DeleteDiningTable(id);
             if (!success) return NotFound();
             return NoContent();
         }
