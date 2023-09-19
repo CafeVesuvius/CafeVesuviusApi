@@ -1,5 +1,6 @@
 using CafeVesuviusApi.Models;
 using Microsoft.EntityFrameworkCore;
+using CafeVesuviusApi.Services.Utilities;
 
 namespace CafeVesuviusApi.Services;
 
@@ -15,6 +16,21 @@ public class ReservationRepository : IReservationRepository
     public async Task<IEnumerable<Reservation>> GetReservations()
     {
         List<Reservation>? reservations = await _context.Reservations.ToListAsync();
+        if (reservations.Count > 0)
+        {
+            foreach (Reservation reservation in reservations)
+            {
+                reservation.ReservationDiningTables = await _context.ReservationDiningTables.Where(reservationDiningTable => reservationDiningTable.ReservationId == reservation.Id).ToListAsync();
+            }
+        }
+        return reservations;
+    }
+    
+    public async Task<IEnumerable<Reservation>> GetReservationsByDateTime(DateTime from, DateTime? to)
+    {
+        List<Reservation>? reservations = await _context.Reservations.Where(reservation =>
+            reservation.Time.Date >= from.Date && reservation.Time.Date <= ((to.HasValue) ? to.Value.Date : from.Date)).ToListAsync();
+        
         if (reservations.Count > 0)
         {
             foreach (Reservation reservation in reservations)
@@ -42,6 +58,11 @@ public class ReservationRepository : IReservationRepository
         _context.Reservations.Add(reservation);
         await _context.SaveChangesAsync();
 
+        foreach (ReservationDiningTable reservationDiningTable in reservation.ReservationDiningTables)
+        {
+            reservationDiningTable.ReservationId = reservation.Id;
+        }
+        
         return reservation;
     }
     
@@ -73,5 +94,28 @@ public class ReservationRepository : IReservationRepository
         await _context.SaveChangesAsync();
 
         return true;
+    }
+
+    public async Task<IEnumerable<DiningTable>> GetDiningTables()
+    {
+        List<DiningTable>? tables = await _context.DiningTables.ToListAsync();
+        return tables;
+    }
+    
+    public DiningTable? GetAvailableTable(DateTime reservationTime)
+    {
+        List<DiningTable> diningTables = GetDiningTables().Result.ToList();
+        List<Reservation> reservationsByDate = GetReservationsByDateTime(reservationTime, null).Result.ToList();
+
+        foreach (Reservation reservation in reservationsByDate)
+        {
+            foreach (ReservationDiningTable rdt in reservation.ReservationDiningTables)
+            {
+                if (rdt.DiningTableId == 0) continue;
+                diningTables.RemoveAll(dt => dt.Id == rdt.DiningTableId);
+            }
+        }
+
+        return (diningTables.Count > 0) ? diningTables.PickRandom() : null;
     }
 }

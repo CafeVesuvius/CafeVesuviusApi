@@ -22,20 +22,14 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpGet("{id}")]
-        public async Task<ActionResult<Reservation>> GetReservation(long id)
+        public async Task<IActionResult> GetReservation(long id)
         {
-            if (_context.Reservations == null)
-            {
-                return NotFound();
-            }
-            var reservation = await _context.Reservations.FindAsync(id);
+            if (await _reservationRepository.GetReservations() == null) return NotFound();
+            Reservation reservation = await _reservationRepository.GetReservation(id);
+            
+            if(reservation == null) return NotFound();
 
-            if (reservation == null)
-            {
-                return NotFound();
-            }
-
-            return reservation;
+            return Ok(reservation);
         }
         
         [HttpGet("All")]

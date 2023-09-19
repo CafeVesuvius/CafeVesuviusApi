@@ -102,9 +102,9 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Reservation");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.FromTime).HasColumnType("datetime");
-            entity.Property(e => e.ReservationName).HasMaxLength(100);
-            entity.Property(e => e.ToTime).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Time).HasColumnType("datetime");
+            entity.Property(e => e.Created).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<ReservationDiningTable>(entity =>
