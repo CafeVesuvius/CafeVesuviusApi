@@ -67,6 +67,9 @@ public class ReservationRepository : IReservationRepository
             reservationDiningTable.DiningTableId = reservationTable.Id;
             
             reservation.ReservationDiningTables.Add(reservationDiningTable);
+
+            bool status = await PutReservation(reservation.Id, reservation);
+            if (!status) return await Task.FromResult<Reservation>(null);
         }
         else return await Task.FromResult<Reservation>(null);
         return reservation;
