@@ -91,10 +91,10 @@ public partial class CafeVesuviusContext : DbContext
             //    .OnDelete(DeleteBehavior.ClientSetNull)
             //    .HasConstraintName("FK_OrderLine_MenuItem");
 
-            entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
-                .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OrderLine_Order");
+            //entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
+            //    .HasForeignKey(d => d.OrderId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_OrderLine_Order");
         });
 
         modelBuilder.Entity<Reservation>(entity =>

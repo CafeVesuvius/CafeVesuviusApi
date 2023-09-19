@@ -11,7 +11,6 @@ public partial class OrderLine
 
     public long OrderId { get; set; }
 
-    public virtual MenuItem MenuItem { get; set; } = null!;
+    //public virtual MenuItem MenuItem { get; set; } = null!;
 
-    public virtual Order Order { get; set; } = null!;
 }
