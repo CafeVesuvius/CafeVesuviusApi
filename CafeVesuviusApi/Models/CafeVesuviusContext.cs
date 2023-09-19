@@ -122,10 +122,10 @@ public partial class CafeVesuviusContext : DbContext
             //     .OnDelete(DeleteBehavior.ClientSetNull)
             //     .HasConstraintName("FK_ReservationDiningTable_DiningTable");
 
-            entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationDiningTables)
-                .HasForeignKey(d => d.ReservationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ReservationDiningTable_Reservation");
+            // entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationDiningTables)
+            //     .HasForeignKey(d => d.ReservationId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_ReservationDiningTable_Reservation");
         });
 
         OnModelCreatingPartial(modelBuilder);

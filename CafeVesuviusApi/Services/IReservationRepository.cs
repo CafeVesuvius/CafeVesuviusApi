@@ -10,7 +10,10 @@ namespace CafeVesuviusApi.Services
         Task<bool> PutReservation(long id, Reservation reservation);
         Task<bool> DeleteReservation(long id);
         Task<IEnumerable<DiningTable>> GetDiningTables();
+        Task<IEnumerable<DiningTable>> GetAvailableDiningTables(DateTime reservationTime);
+        Task<DiningTable> GetAvailableDiningTable(DateTime reservationTime);
         Task<DiningTable> PostDiningTable(DiningTable diningTable);
+        Task<bool> PutDiningTable(long id, DiningTable diningTable);
         Task<bool> DeleteDiningTable(long id);
     }
 }

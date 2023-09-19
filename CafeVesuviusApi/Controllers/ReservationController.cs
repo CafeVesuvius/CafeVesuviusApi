@@ -39,6 +39,16 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _reservationRepository.GetReservations());
         }
         
+        [HttpPost]
+        public async Task<IActionResult> PostReservation(Reservation reservation)
+        {
+            if (await _reservationRepository.GetReservations() == null)
+            {
+                return Problem("Entity set 'CafeVesuviusContext.Menus'  is null.");
+            }
+            return Ok(await _reservationRepository.PostReservation(reservation));
+        }
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReservation(long id, Reservation reservation)
         {
@@ -50,16 +60,6 @@ namespace CafeVesuviusApi.Controllers
 
             if (!success) return NotFound();
             return NoContent();
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> PostReservation(Reservation reservation)
-        {
-            if (await _reservationRepository.GetReservations() == null)
-            {
-                return Problem("Entity set 'CafeVesuviusContext.Menus'  is null.");
-            }
-            return Ok(await _reservationRepository.PostReservation(reservation));
         }
         
         [HttpDelete("{id}")]
@@ -79,6 +79,13 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _reservationRepository.GetDiningTables());
         }
         
+        [HttpGet("DiningTable/Available/{reservationTime}")]
+        public async Task<IActionResult> GetAvailableDiningTables(DateTime reservationTime)
+        {
+            if (await _reservationRepository.GetAvailableDiningTables(reservationTime) == null) return NotFound();
+            return Ok(await _reservationRepository.GetAvailableDiningTables(reservationTime));
+        }
+        
         [HttpPost("DiningTable")]
         public async Task<IActionResult> PostDiningTable(DiningTable diningTable)
         {
@@ -87,6 +94,19 @@ namespace CafeVesuviusApi.Controllers
                 return Problem("Entity set 'CafeVesuviusContext.Menus'  is null.");
             }
             return Ok(await _reservationRepository.PostDiningTable(diningTable));
+        }
+        
+        [HttpPut("DiningTable/{id}")]
+        public async Task<IActionResult> PutDiningTable(long id, DiningTable diningTable)
+        {
+            if (id != diningTable.Id)
+            {
+                return BadRequest();
+            }
+            bool success = await _reservationRepository.PutDiningTable(id, diningTable);
+
+            if (!success) return NotFound();
+            return NoContent();
         }
         
         [HttpDelete("DiningTable/{id}")]

@@ -53,11 +53,11 @@ public class ReservationRepository : IReservationRepository
         return reservation;
     }
     
-    public async Task<Reservation?> PostReservation(Reservation reservation)
+    public async Task<Reservation> PostReservation(Reservation reservation)
     {
-        DiningTable? reservationTable = GetAvailableTable(reservation.Time);
+        DiningTable reservationTable = await GetAvailableDiningTable(reservation.Time);
 
-        if (reservationTable != null)
+        if (reservationTable.Id != 0)
         {
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
@@ -68,7 +68,7 @@ public class ReservationRepository : IReservationRepository
             
             reservation.ReservationDiningTables.Add(reservationDiningTable);
         }
-        else return null;
+        else return await Task.FromResult<Reservation>(null);
         return reservation;
     }
     
@@ -110,6 +110,24 @@ public class ReservationRepository : IReservationRepository
         return diningTable;
     }
     
+    public async Task<bool> PutDiningTable(long id, DiningTable diningTable)
+    {
+        _context.Entry(diningTable).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!(_context.DiningTables?.Any(e => e.Id == id)).GetValueOrDefault())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public async Task<bool> DeleteDiningTable(long id)
     {
         DiningTable? diningTable = await _context.DiningTables.FindAsync(id);
@@ -128,13 +146,14 @@ public class ReservationRepository : IReservationRepository
         return tables;
     }
     
-    public DiningTable? GetAvailableTable(DateTime reservationTime)
+    public async Task<IEnumerable<DiningTable>> GetAvailableDiningTables(DateTime reservationTime)
     {
-        List<DiningTable> diningTables = GetDiningTables().Result.ToList();
-        List<Reservation> reservationsByDate = GetReservationsByDateTime(reservationTime, null).Result.ToList();
+        List<DiningTable> diningTables = (List<DiningTable>)await GetDiningTables();
+        List<Reservation> reservationsByDate = (List<Reservation>)await GetReservationsByDateTime(reservationTime, null);
 
         foreach (Reservation reservation in reservationsByDate)
         {
+            if ((reservation.Time - reservationTime).TotalHours > 2) continue;
             foreach (ReservationDiningTable rdt in reservation.ReservationDiningTables)
             {
                 if (rdt.DiningTableId == 0) continue;
@@ -142,6 +161,12 @@ public class ReservationRepository : IReservationRepository
             }
         }
 
-        return (diningTables.Count > 0) ? diningTables.PickRandom() : null;
+        return diningTables;
+    }
+
+    public async Task<DiningTable> GetAvailableDiningTable(DateTime reservationTime)
+    {
+        List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTables(reservationTime);
+        return (diningTables.Any()) ? diningTables.PickRandom() : await Task.FromResult<DiningTable>(null);
     }
 }
