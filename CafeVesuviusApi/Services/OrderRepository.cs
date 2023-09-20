@@ -1,5 +1,6 @@
 ﻿using CafeVesuviusApi.Models;
 using Microsoft.EntityFrameworkCore;
+using static NuGet.Packaging.PackagingConstants;
 
 namespace CafeVesuviusApi.Services
 {
@@ -17,6 +18,18 @@ namespace CafeVesuviusApi.Services
         {
             List<Order> orders = await _context.Orders.ToListAsync();
 
+            if (orders.Any())
+            {
+                foreach (Order order in orders)
+                {
+                    order.OrderLines = await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync();
+                    foreach (OrderLine line in order.OrderLines)
+                    {
+                        line.MenuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
+                    }
+                }
+            }
+
             return orders;
         }
 
@@ -24,6 +37,14 @@ namespace CafeVesuviusApi.Services
         public async Task<Order?> GetOrderById(long id)
         {
             Order? order = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
+            if (order != null)
+            {
+                order.OrderLines = await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync();
+                foreach (OrderLine line in order.OrderLines)
+                {
+                    line.MenuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
+                }
+            }
             return order;
         }
 
