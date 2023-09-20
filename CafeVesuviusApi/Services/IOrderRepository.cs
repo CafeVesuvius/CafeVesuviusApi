@@ -1,4 +1,5 @@
-﻿using CafeVesuviusApi.Models;
+﻿using CafeVesuviusApi.DTOs;
+using CafeVesuviusApi.Models;
 
 namespace CafeVesuviusApi.Services
 {
@@ -6,8 +7,8 @@ namespace CafeVesuviusApi.Services
     {
         Task<Order> AddOrder(Order order);
         Task<bool> DeleteOrder(long id);
-        Task<IEnumerable<Order>> GetAllOrders();
-        Task<Order?> GetOrderById(long id);
+        Task<IEnumerable<OrderDTO>> GetOrders();
+        Task<OrderDTO> GetOrder(long id);
         Task<bool> UpdateOrder(long id, Order order);
     }
 }

@@ -12,7 +12,4 @@ public partial class OrderLine
     public long MenuItemId { get; set; }
 
     public long OrderId { get; set; }
-
-    public virtual MenuItem MenuItem { get; set; } = null!;
-
 }

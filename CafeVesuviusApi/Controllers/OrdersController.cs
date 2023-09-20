@@ -25,8 +25,8 @@ namespace CafeVesuviusApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOrders()
         {
-            if (await _orderRepository.GetAllOrders() == null) return NotFound();
-            return Ok(await _orderRepository.GetAllOrders());
+            if (await _orderRepository.GetOrders() == null) return NotFound();
+            return Ok(await _orderRepository.GetOrders());
         }
 
 
@@ -34,8 +34,8 @@ namespace CafeVesuviusApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrder(long id)
         {
-            if (await _orderRepository.GetAllOrders() == null) return NotFound();
-            var order = await _orderRepository.GetOrderById(id);
+            if (await _orderRepository.GetOrders() == null) return NotFound();
+            var order = await _orderRepository.GetOrder(id);
             if (order == null) return NotFound();
             return Ok(order);
         }
@@ -55,7 +55,7 @@ namespace CafeVesuviusApi.Controllers
         [HttpPost]
         public async Task<IActionResult> PostOrder(Order order)
         {
-            if (await _orderRepository.GetAllOrders() == null) return NotFound();
+            if (await _orderRepository.GetOrders() == null) return NotFound();
             await _orderRepository.AddOrder(order);
             return CreatedAtAction("GetOrder", new { id = order.Id }, order);
         }
@@ -64,7 +64,7 @@ namespace CafeVesuviusApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(long id)
         {
-            if (await _orderRepository.GetAllOrders() == null) return NotFound();
+            if (await _orderRepository.GetOrders() == null) return NotFound();
             if(!(await _orderRepository.DeleteOrder(id))) return BadRequest();
             return NoContent();
         }

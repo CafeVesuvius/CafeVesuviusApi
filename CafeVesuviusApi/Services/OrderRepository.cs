@@ -1,4 +1,6 @@
-﻿using CafeVesuviusApi.Models;
+﻿using AutoMapper;
+using CafeVesuviusApi.DTOs;
+using CafeVesuviusApi.Models;
 using Microsoft.EntityFrameworkCore;
 using static NuGet.Packaging.PackagingConstants;
 
@@ -14,38 +16,59 @@ namespace CafeVesuviusApi.Services
         }
 
         //Gets All orders from database
-        public async Task<IEnumerable<Order>> GetAllOrders()
+        public async Task<IEnumerable<OrderDTO>> GetOrders()
         {
             List<Order> orders = await _context.Orders.ToListAsync();
-
-            if (orders.Any())
+            List<OrderDTO> orderDtos = new List<OrderDTO>();
+            
+            foreach (Order order in orders)
             {
-                foreach (Order order in orders)
+                var orderConfig = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>());
+                var orderMapper = new Mapper(orderConfig);
+                OrderDTO orderDto = orderMapper.Map<OrderDTO>(order);
+                
+                foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync())
                 {
-                    order.OrderLines = await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync();
-                    foreach (OrderLine line in order.OrderLines)
-                    {
-                        line.MenuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
-                    }
+                    var orderLineConfig = new MapperConfiguration(cfg => cfg.CreateMap<OrderLine, OrderLineDTO>());
+                    var orderLineMapper = new Mapper(orderLineConfig);
+                    OrderLineDTO orderLineDto = orderLineMapper.Map<OrderLineDTO>(line);
+                    
+                    MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
+                    if (menuItem == null) continue;
+                    
+                    orderLineDto.MenuItem = menuItem;
+                    orderDto.OrderLines.Add(orderLineDto);
                 }
+                
+                orderDtos.Add(orderDto);
             }
 
-            return orders;
+            return orderDtos;
         }
 
         //Get order by id
-        public async Task<Order?> GetOrderById(long id)
+        public async Task<OrderDTO> GetOrder(long id)
         {
             Order? order = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
-            if (order != null)
+            if (order == null) return await Task.FromResult<OrderDTO>(null); // Order wasn't found
+            
+            var orderConfig = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>());
+            var orderMapper = new Mapper(orderConfig);
+            OrderDTO orderDto = orderMapper.Map<OrderDTO>(order);
+            
+            foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync())
             {
-                order.OrderLines = await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync();
-                foreach (OrderLine line in order.OrderLines)
-                {
-                    line.MenuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
-                }
+                var orderLineConfig = new MapperConfiguration(cfg => cfg.CreateMap<OrderLine, OrderLineDTO>());
+                var orderLineMapper = new Mapper(orderLineConfig);
+                OrderLineDTO orderLineDto = orderLineMapper.Map<OrderLineDTO>(line);
+                
+                MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
+                if (menuItem == null) continue;
+                
+                orderLineDto.MenuItem = menuItem;
+                orderDto.OrderLines.Add(orderLineDto);
             }
-            return order;
+            return orderDto;
         }
 
         //Update order
