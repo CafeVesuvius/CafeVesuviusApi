@@ -99,7 +99,7 @@ public partial class CafeVesuviusContext : DbContext
 
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.ToTable("Reservation");
+            entity.ToTable("Reservation", tb => tb.HasTrigger("trg_ReservationCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Name).HasMaxLength(100);
