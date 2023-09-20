@@ -39,8 +39,7 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("DiningTable");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Number).HasColumnName("Number");
-            entity.Property(e => e.Seats).HasColumnName("Seats");
+            entity.Property(e => e.Number).HasMaxLength(10);
         });
 
         modelBuilder.Entity<Menu>(entity =>
@@ -74,7 +73,7 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Order", tb => tb.HasTrigger("trg_OrderCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Created).HasColumnType("Created");
+            entity.Property(e => e.Created).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<OrderLine>(entity =>
