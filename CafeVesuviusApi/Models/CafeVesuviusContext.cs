@@ -43,7 +43,7 @@ public partial class CafeVesuviusContext : DbContext
 
         modelBuilder.Entity<Menu>(entity =>
         {
-            entity.ToTable("Menu", tb => tb.HasTrigger("trg_UpdateChangedTS"));
+            entity.ToTable("Menu", tb => tb.HasTrigger("trg_MenuUpdated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Changed).HasColumnType("datetime");
@@ -53,7 +53,7 @@ public partial class CafeVesuviusContext : DbContext
 
         modelBuilder.Entity<MenuItem>(entity =>
         {
-            entity.ToTable("MenuItem");
+            entity.ToTable("MenuItem", tb => tb.HasTrigger("trg_MenuItemUpdated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasMaxLength(1000);
@@ -69,13 +69,10 @@ public partial class CafeVesuviusContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.ToTable("Order");
+            entity.ToTable("Order", tb => tb.HasTrigger("trg_OrderCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CreatedTs)
-                .IsRowVersion()
-                .IsConcurrencyToken()
-                .HasColumnName("Created_TS");
+            entity.Property(e => e.Created).HasColumnType("Created");
         });
 
         modelBuilder.Entity<OrderLine>(entity =>
@@ -83,6 +80,7 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("OrderLine");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Quantity).HasColumnType("Quantity");
             entity.Property(e => e.MenuItemId).HasColumnName("MenuItemID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
 

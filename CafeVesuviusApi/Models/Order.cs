@@ -9,7 +9,7 @@ public partial class Order
 
     public bool Completed { get; set; }
 
-    public byte[]? CreatedTs { get; set; }
+    public DateTime Created { get; set; }
 
     public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
 }
