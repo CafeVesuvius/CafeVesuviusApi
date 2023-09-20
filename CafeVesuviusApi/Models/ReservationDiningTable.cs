@@ -10,8 +10,4 @@ public partial class ReservationDiningTable
     public long ReservationId { get; set; }
 
     public long DiningTableId { get; set; }
-
-    public virtual DiningTable DiningTable { get; set; } = null!;
-
-    public virtual Reservation Reservation { get; set; } = null!;
 }

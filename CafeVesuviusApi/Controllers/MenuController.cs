@@ -96,8 +96,7 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _menuRepository.PostMenu(menu));
         }
         
-        [Route("Item")]
-        [HttpPost]
+        [HttpPost("Item")]
         public async Task<IActionResult> PostMenuItem(MenuItem menuItem)
         {
             if (await _menuRepository.GetAllMenus() == null)

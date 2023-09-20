@@ -39,6 +39,8 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("DiningTable");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Number).HasColumnName("Number");
+            entity.Property(e => e.Seats).HasColumnName("Seats");
         });
 
         modelBuilder.Entity<Menu>(entity =>
@@ -100,9 +102,9 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Reservation");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.FromTime).HasColumnType("datetime");
-            entity.Property(e => e.ReservationName).HasMaxLength(100);
-            entity.Property(e => e.ToTime).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Time).HasColumnType("datetime");
+            entity.Property(e => e.Created).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<ReservationDiningTable>(entity =>
@@ -113,15 +115,15 @@ public partial class CafeVesuviusContext : DbContext
             entity.Property(e => e.DiningTableId).HasColumnName("DiningTableID");
             entity.Property(e => e.ReservationId).HasColumnName("ReservationID");
 
-            entity.HasOne(d => d.DiningTable).WithMany(p => p.ReservationDiningTables)
-                .HasForeignKey(d => d.DiningTableId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ReservationDiningTable_DiningTable");
+            // entity.HasOne(d => d.DiningTable).WithMany(p => p.ReservationDiningTables)
+            //     .HasForeignKey(d => d.DiningTableId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_ReservationDiningTable_DiningTable");
 
-            entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationDiningTables)
-                .HasForeignKey(d => d.ReservationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ReservationDiningTable_Reservation");
+            // entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationDiningTables)
+            //     .HasForeignKey(d => d.ReservationId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_ReservationDiningTable_Reservation");
         });
 
         OnModelCreatingPartial(modelBuilder);
