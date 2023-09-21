@@ -26,7 +26,7 @@ public class ReservationRepository : IReservationRepository
             
             foreach (ReservationDiningTable rdt in await _context.ReservationDiningTables.Where(rdt => rdt.ReservationId == reservation.Id).ToListAsync())
             {
-                var rdtConfig = new MapperConfiguration(cfg => cfg.CreateMap<OrderLine, OrderLineDTO>());
+                var rdtConfig = new MapperConfiguration(cfg => cfg.CreateMap<ReservationDiningTable, ReservationDiningTableDTO>());
                 var rdtMapper = new Mapper(rdtConfig);
                 ReservationDiningTableDTO rdtDto = rdtMapper.Map<ReservationDiningTableDTO>(rdt);
                 
