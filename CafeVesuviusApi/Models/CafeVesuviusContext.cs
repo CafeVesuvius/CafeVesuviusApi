@@ -58,6 +58,7 @@ public partial class CafeVesuviusContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasMaxLength(1000);
+            entity.Property(e => e.ImagePath).HasMaxLength(255);
             entity.Property(e => e.MenuId).HasColumnName("MenuID");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");

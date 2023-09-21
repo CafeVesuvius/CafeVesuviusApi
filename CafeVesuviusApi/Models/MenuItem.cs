@@ -14,6 +14,8 @@ public partial class MenuItem
     public decimal UnitPrice { get; set; }
 
     public bool Active { get; set; }
+    
+    public string? ImagePath { get; set; }
 
     public long MenuId { get; set; }
 }
