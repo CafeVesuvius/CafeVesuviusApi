@@ -1,5 +1,4 @@
 ﻿using CafeVesuviusApi.Context;
-using JWTRefreshTokens.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using CafeVesuviusApi.Entities;
+using CafeVesuviusApi.Models;
 
 namespace CafeVesuviusApi.Services
 {
