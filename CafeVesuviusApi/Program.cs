@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen(c =>
     
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "This site uses Bearer token and you have to pass" +
+        Description = "This site uses Bearer token and you have to pass" + 
                       "it as Bearer<<space>>Token",
         Name = "Authorization",
         In = ParameterLocation.Header,
@@ -47,42 +47,41 @@ builder.Services.AddSwaggerGen(c =>
             new List<string>()
         }
     });
-    
-    var jwtKey = builder.Configuration.GetValue<string>("JwtSettings:Key");
-    var keyBytes = Encoding.ASCII.GetBytes(jwtKey);
-    
-    TokenValidationParameters tokenValidation = new TokenValidationParameters
-    {
-        IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-        ValidateLifetime = true,
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        ClockSkew = TimeSpan.Zero
-    };
-    
-    builder.Services.AddSingleton(tokenValidation);
-    
-    builder.Services.AddAuthentication(authOptions =>
-        {
-            authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(jwtOptions =>
-        {
-            jwtOptions.TokenValidationParameters = tokenValidation;
-            jwtOptions.Events = new JwtBearerEvents();
-            jwtOptions.Events.OnTokenValidated = async (context) =>
-            {
-                var ipAddress = context.Request.HttpContext.Connection.RemoteIpAddress.ToString();
-                var jwtService = context.Request.HttpContext.RequestServices.GetService<IJwtService>();
-                var jwtToken = context.SecurityToken as JwtSecurityToken;
-                if (!await jwtService.IsTokenValid(jwtToken.RawData, ipAddress))
-                    context.Fail("Invalid Token Details");
-            };
-        });
-    
-    builder.Services.AddTransient<IJwtService, JwtService>();
 });
+
+var jwtKey = builder.Configuration.GetValue<string>("JwtSettings:Key");
+var keyBytes = Encoding.ASCII.GetBytes(jwtKey);
+
+TokenValidationParameters tokenValidation = new TokenValidationParameters
+{
+    IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+    ValidateLifetime = true,
+    ValidateAudience = false,
+    ValidateIssuer = false,
+    ClockSkew = TimeSpan.Zero
+};
+
+builder.Services.AddSingleton(tokenValidation);
+builder.Services.AddAuthentication(authOptions =>
+    {
+        authOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        authOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(jwtOptions =>
+    {
+        jwtOptions.TokenValidationParameters = tokenValidation;
+        jwtOptions.Events = new JwtBearerEvents();
+        jwtOptions.Events.OnTokenValidated = async (context) =>
+        {
+            var ipAddress = context.Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            var jwtService = context.Request.HttpContext.RequestServices.GetService<IJwtService>();
+            var jwtToken = context.SecurityToken as JwtSecurityToken;
+            if (!await jwtService.IsTokenValid(jwtToken.RawData, ipAddress))
+                context.Fail("Invalid Token Details");
+        };
+    });
+    
+builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddDbContext<CafeVesuviusContext>(x => x.UseSqlServer(connectionString,builder =>
     {
         builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
@@ -107,4 +106,3 @@ app.MapControllers();
 app.Run();
 
 public partial class Program { }
- 
