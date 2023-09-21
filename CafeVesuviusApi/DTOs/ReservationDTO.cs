@@ -1,3 +1,5 @@
+using CafeVesuviusApi.Models;
+
 namespace CafeVesuviusApi.DTOs;
 
 public class ReservationDTO
@@ -10,5 +12,5 @@ public class ReservationDTO
     
     public DateTime? Created { get; set; }
 
-    public virtual ICollection<ReservationDiningTableDTO> ReservationDiningTables { get; set; } = new List<ReservationDiningTableDTO>();
+    public virtual ICollection<DiningTable> ReservationDiningTables { get; set; } = new List<DiningTable>();
 }
