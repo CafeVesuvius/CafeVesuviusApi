@@ -1,3 +1,5 @@
+using AutoMapper;
+using CafeVesuviusApi.DTOs;
 using CafeVesuviusApi.Models;
 using Microsoft.EntityFrameworkCore;
 using CafeVesuviusApi.Services.Utilities;
@@ -13,17 +15,27 @@ public class ReservationRepository : IReservationRepository
         _context = context;
     }
     
-    public async Task<IEnumerable<Reservation>> GetReservations()
+    public async Task<IEnumerable<ReservationDTO>> GetReservations()
     {
-        List<Reservation>? reservations = await _context.Reservations.ToListAsync();
-        if (reservations.Count > 0)
+        List<ReservationDTO> reservationDtos = new List<ReservationDTO>();
+        foreach (Reservation reservation in await _context.Reservations.ToListAsync())
         {
-            foreach (Reservation reservation in reservations)
+            var reservationConfig = new MapperConfiguration(cfg => cfg.CreateMap<Reservation, ReservationDTO>().ForMember(x => x.ReservationDiningTables, opt => opt.Ignore()));
+            var reservationMapper = new Mapper(reservationConfig);
+            ReservationDTO reservationDto = reservationMapper.Map<ReservationDTO>(reservation);
+            
+            foreach (ReservationDiningTable rdt in await _context.ReservationDiningTables.Where(rdt => rdt.ReservationId == reservation.Id).ToListAsync())
             {
-                reservation.ReservationDiningTables = await _context.ReservationDiningTables.Where(reservationDiningTable => reservationDiningTable.ReservationId == reservation.Id).ToListAsync();
+                DiningTable? diningTable = await _context.DiningTables.Where(item => item.Id == rdt.DiningTableId).SingleOrDefaultAsync();
+                if (diningTable == null) continue;
+
+                reservationDto.ReservationDiningTables.Add(diningTable);
             }
+            
+            reservationDtos.Add(reservationDto);
         }
-        return reservations;
+
+        return reservationDtos;
     }
     
     public async Task<IEnumerable<Reservation>> GetReservationsByDateTime(DateTime from, DateTime? to)
