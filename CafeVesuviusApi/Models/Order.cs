@@ -9,9 +9,9 @@ public partial class Order
 
     public string Name { get; set; } = null!;
     
-    public bool Completed { get; set; }
-
     public DateTime? Created { get; set; }
+    
+    public bool Completed { get; set; }
 
     public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
 }
