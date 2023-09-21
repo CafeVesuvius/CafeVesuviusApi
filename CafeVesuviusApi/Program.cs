@@ -3,7 +3,7 @@ using CafeVesuviusApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("CafeVesuvius");
+var connectionString = builder.Configuration.GetConnectionString("Name=ConnectionString");
 
 // Add services to the container.
 
@@ -18,6 +18,7 @@ builder.Services.AddDbContext<CafeVesuviusContext>(x => x.UseSqlServer(connectio
     }));
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 var app = builder.Build();
 

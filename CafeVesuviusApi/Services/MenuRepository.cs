@@ -14,6 +14,7 @@ namespace CafeVesuviusApi.Services
             _context = context;
         }
 
+        // Gets the last created menu from database and returns it
         public async Task<Menu> GetNewestMenu()
         {
             Menu? menu = await _context.Menus.OrderBy(Menu => Menu.Id).LastAsync();
@@ -21,6 +22,8 @@ namespace CafeVesuviusApi.Services
 
             return menu;
         }
+
+        // Gets all active menus from database menu.active is boolean, return IEnmuerable<Menu>
         public async Task<IEnumerable<Menu>> GetActiveMenus()
         {
             List<Menu>? menus = await _context.Menus.Where(Menu => Menu.Active).ToListAsync();
@@ -34,6 +37,8 @@ namespace CafeVesuviusApi.Services
 
             return menus;
         }
+
+        // Gets the last changed menu from the data databse returns singular menu
         public async Task<Menu> GetLastChanged()
         {
             Menu? menu = await _context.Menus.OrderBy(menu => menu.Changed).FirstAsync();
@@ -42,6 +47,7 @@ namespace CafeVesuviusApi.Services
             return menu;
         }
 
+        // Gets all menus in the database returns a multiple menus
         public async Task<IEnumerable<Menu>> GetAllMenus()
         {
             List<Menu>? menus = await _context.Menus.OrderBy(menu => menu.Changed).ToListAsync();
@@ -54,6 +60,8 @@ namespace CafeVesuviusApi.Services
             }
             return menus;
         }
+
+        // Gets menu by id from the database, returns singular menu
         public async Task<Menu> GetMenuById(long id)
         {
             Menu? menu = await _context.Menus.FindAsync(id);
@@ -66,6 +74,7 @@ namespace CafeVesuviusApi.Services
             return menu;
         }
 
+        // Updates a menu given a menu, returns true if succes and false if failure
         public async Task<bool> UpdateMenu(long id, Menu menu)
         {
             _context.Entry(menu).State = EntityState.Modified;

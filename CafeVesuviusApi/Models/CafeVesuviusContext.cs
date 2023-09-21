@@ -39,13 +39,12 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("DiningTable");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Number).HasColumnName("Number");
-            entity.Property(e => e.Seats).HasColumnName("Seats");
+            entity.Property(e => e.Number).HasMaxLength(10);
         });
 
         modelBuilder.Entity<Menu>(entity =>
         {
-            entity.ToTable("Menu", tb => tb.HasTrigger("trg_UpdateChangedTS"));
+            entity.ToTable("Menu", tb => tb.HasTrigger("trg_MenuUpdated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Changed).HasColumnType("datetime");
@@ -55,10 +54,11 @@ public partial class CafeVesuviusContext : DbContext
 
         modelBuilder.Entity<MenuItem>(entity =>
         {
-            entity.ToTable("MenuItem");
+            entity.ToTable("MenuItem", tb => tb.HasTrigger("trg_MenuItemUpdated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasMaxLength(1000);
+            entity.Property(e => e.ImagePath).HasMaxLength(255);
             entity.Property(e => e.MenuId).HasColumnName("MenuID");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
@@ -71,13 +71,11 @@ public partial class CafeVesuviusContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.ToTable("Order");
+            entity.ToTable("Order", tb => tb.HasTrigger("trg_OrderCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CreatedTs)
-                .IsRowVersion()
-                .IsConcurrencyToken()
-                .HasColumnName("Created_TS");
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Created).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<OrderLine>(entity =>
@@ -85,6 +83,7 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("OrderLine");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Quantity).HasColumnType("Quantity");
             entity.Property(e => e.MenuItemId).HasColumnName("MenuItemID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
@@ -93,15 +92,15 @@ public partial class CafeVesuviusContext : DbContext
             //    .OnDelete(DeleteBehavior.ClientSetNull)
             //    .HasConstraintName("FK_OrderLine_MenuItem");
 
-            entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
-                .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OrderLine_Order");
+            //entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
+            //    .HasForeignKey(d => d.OrderId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_OrderLine_Order");
         });
 
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.ToTable("Reservation");
+            entity.ToTable("Reservation", tb => tb.HasTrigger("trg_ReservationCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Name).HasMaxLength(100);

@@ -11,7 +11,7 @@ public partial class Reservation
     
     public DateTime Time { get; set; }
     
-    public DateTime Created { get; set; }
+    public DateTime? Created { get; set; }
 
     public virtual ICollection<ReservationDiningTable> ReservationDiningTables { get; set; } = new List<ReservationDiningTable>();
 }
