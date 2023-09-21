@@ -1,5 +1,5 @@
 ﻿using CafeVesuviusApi.DTOs;
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 
 namespace CafeVesuviusApi.Services
 {

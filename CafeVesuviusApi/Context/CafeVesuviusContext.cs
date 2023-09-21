@@ -57,7 +57,7 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Menu", tb => tb.HasTrigger("trg_MenuUpdated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Changed).HasColumnType("datetime");
+            entity.Property(e => e.ChangedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Season).HasMaxLength(50);
         });
@@ -73,10 +73,10 @@ public partial class CafeVesuviusContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
 
-            //entity.HasOne(d => d.Menu).WithMany(p => p.MenuItems)
-            //    .HasForeignKey(d => d.MenuId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull)
-            //    .HasConstraintName("FK_MenuItem_Menu");
+            // entity.HasOne(d => d.Menu).WithMany(p => p.MenuItems)
+            //     .HasForeignKey(d => d.MenuId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_MenuItem_Menu");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -84,7 +84,8 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Order", tb => tb.HasTrigger("trg_OrderCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Created).HasColumnType("datetime");
+            entity.Property(e => e.IsCompleted).HasColumnType("IsCompleted");
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
         });
 
@@ -97,15 +98,15 @@ public partial class CafeVesuviusContext : DbContext
             entity.Property(e => e.MenuItemId).HasColumnName("MenuItemID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
-            //entity.HasOne(d => d.MenuItem).WithMany(p => p.OrderLines)
-            //    .HasForeignKey(d => d.MenuItemId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull)
-            //    .HasConstraintName("FK_OrderLine_MenuItem");
+            // entity.HasOne(d => d.MenuItem).WithMany(p => p.OrderLines)
+            //     .HasForeignKey(d => d.MenuItemId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_OrderLine_MenuItem");
 
-            //entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
-            //    .HasForeignKey(d => d.OrderId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull)
-            //    .HasConstraintName("FK_OrderLine_Order");
+            // entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
+            //     .HasForeignKey(d => d.OrderId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_OrderLine_Order");
         });
 
         modelBuilder.Entity<Reservation>(entity =>
@@ -113,7 +114,7 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Reservation", tb => tb.HasTrigger("trg_ReservationCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Created).HasColumnType("datetime");
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Time).HasColumnType("datetime");
         });

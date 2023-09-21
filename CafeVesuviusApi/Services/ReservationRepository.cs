@@ -1,6 +1,7 @@
 using AutoMapper;
+using CafeVesuviusApi.Context;
 using CafeVesuviusApi.DTOs;
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 using Microsoft.EntityFrameworkCore;
 using CafeVesuviusApi.Services.Utilities;
 

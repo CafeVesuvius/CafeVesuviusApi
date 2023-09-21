@@ -1,10 +1,10 @@
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 
 namespace CafeVesuviusApi.DTOs;
 
 public class OrderLineDTO
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     public byte Quantity { get; set; }
     

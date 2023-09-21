@@ -1,10 +1,10 @@
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 
 namespace CafeVesuviusApi.DTOs;
 
 public class ReservationDiningTableDTO
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     public DiningTable DiningTable { get; set; } = null!;
 }

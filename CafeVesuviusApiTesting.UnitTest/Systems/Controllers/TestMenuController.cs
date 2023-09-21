@@ -1,5 +1,5 @@
 ﻿using CafeVesuviusApi.Controllers;
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 using CafeVesuviusApi.Services;
 using CafeVesuviusApiTesting.UnitTest.Fixtures;
 using FluentAssertions;

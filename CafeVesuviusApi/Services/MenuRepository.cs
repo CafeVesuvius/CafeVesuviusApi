@@ -1,7 +1,8 @@
-﻿using CafeVesuviusApi.Models;
+﻿using CafeVesuviusApi.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using CafeVesuviusApi.Context;
 
 namespace CafeVesuviusApi.Services
 {
@@ -26,7 +27,7 @@ namespace CafeVesuviusApi.Services
         // Gets all active menus from database menu.active is boolean, return IEnmuerable<Menu>
         public async Task<IEnumerable<Menu>> GetActiveMenus()
         {
-            List<Menu>? menus = await _context.Menus.Where(Menu => Menu.Active).ToListAsync();
+            List<Menu>? menus = await _context.Menus.Where(Menu => Menu.IsActive).ToListAsync();
             if (menus.Count > 0)
             {
                 foreach (Menu menu in menus)
@@ -41,7 +42,7 @@ namespace CafeVesuviusApi.Services
         // Gets the last changed menu from the data databse returns singular menu
         public async Task<Menu> GetLastChanged()
         {
-            Menu? menu = await _context.Menus.OrderBy(menu => menu.Changed).FirstAsync();
+            Menu? menu = await _context.Menus.OrderBy(menu => menu.ChangedDate).FirstAsync();
             menu.MenuItems = await _context.MenuItems.Where(MenuItem => MenuItem.MenuId == menu.Id).ToListAsync();
 
             return menu;
@@ -50,7 +51,7 @@ namespace CafeVesuviusApi.Services
         // Gets all menus in the database returns a multiple menus
         public async Task<IEnumerable<Menu>> GetAllMenus()
         {
-            List<Menu>? menus = await _context.Menus.OrderBy(menu => menu.Changed).ToListAsync();
+            List<Menu>? menus = await _context.Menus.OrderBy(menu => menu.ChangedDate).ToListAsync();
             if (menus.Count > 0)
             {
                 foreach (Menu menu in menus)

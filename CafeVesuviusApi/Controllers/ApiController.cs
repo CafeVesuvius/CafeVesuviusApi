@@ -1,5 +1,5 @@
+using CafeVesuviusApi.Entities;
 using Microsoft.AspNetCore.Mvc;
-using CafeVesuviusApi.Models;
 
 namespace CafeVesuviusApi.Controllers
 {

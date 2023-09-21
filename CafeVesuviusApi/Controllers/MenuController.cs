@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 using CafeVesuviusApi.Services;
 
 namespace CafeVesuviusApi.Controllers
