@@ -2,7 +2,6 @@
 using CafeVesuviusApi.DTOs;
 using CafeVesuviusApi.Models;
 using Microsoft.EntityFrameworkCore;
-using static NuGet.Packaging.PackagingConstants;
 
 namespace CafeVesuviusApi.Services
 {
@@ -23,7 +22,7 @@ namespace CafeVesuviusApi.Services
             
             foreach (Order order in orders)
             {
-                var orderConfig = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>());
+                var orderConfig = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>().ForMember(x => x.OrderLines, opt => opt.Ignore()));
                 var orderMapper = new Mapper(orderConfig);
                 OrderDTO orderDto = orderMapper.Map<OrderDTO>(order);
                 
@@ -52,7 +51,7 @@ namespace CafeVesuviusApi.Services
             Order? order = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
             if (order == null) return await Task.FromResult<OrderDTO>(null); // Order wasn't found
             
-            var orderConfig = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>());
+            var orderConfig = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>().ForMember(x => x.OrderLines, opt => opt.Ignore()));
             var orderMapper = new Mapper(orderConfig);
             OrderDTO orderDto = orderMapper.Map<OrderDTO>(order);
             
