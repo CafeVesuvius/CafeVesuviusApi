@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using CafeVesuviusApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CafeVesuviusApi.Models;
+namespace CafeVesuviusApi.Context;
 
 public partial class CafeVesuviusContext : DbContext
 {
-    public CafeVesuviusContext()
-    {
-    }
-
     public CafeVesuviusContext(DbContextOptions<CafeVesuviusContext> options)
         : base(options)
     {
