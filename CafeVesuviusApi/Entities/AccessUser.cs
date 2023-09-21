@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CafeVesuviusApi.Entities;
 
-public partial class AccessUser
+public class AccessUser
 {
     public int Id { get; set; }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CafeVesuviusApi.Entities;
 
-public partial class OrderLine
+public class OrderLine
 {
     public int Id { get; set; }
 

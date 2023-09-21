@@ -32,7 +32,7 @@ namespace CafeVesuviusApi.Services
             return await SaveTokenDetails(ipAddress, userId, accessToken, refreshToken);
         }
 
-        public async Task<AuthResponse> GetTokenAsync(AuthRequest authRequest,string ipAddress)
+        public async Task<AuthResponse> GetTokenAsync(AuthRequest authRequest, string ipAddress)
         {
             var user = _context.AccessUsers.FirstOrDefault(x => x.UserName.Equals(authRequest.UserName)
             && x.UserPassword.Equals(authRequest.Password));
@@ -41,7 +41,6 @@ namespace CafeVesuviusApi.Services
             string tokenString = GenerateToken(user.UserName);
             string refreshToken = GenerateRefreshToken();
             return await SaveTokenDetails(ipAddress, user.Id, tokenString, refreshToken);
-
         }
 
         private async Task<AuthResponse> SaveTokenDetails(string ipAddress, int userId, string tokenString, string refreshToken)
