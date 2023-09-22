@@ -9,7 +9,7 @@ public class OrderLine
 
     public byte Quantity { get; set; }
     
-    public long MenuItemId { get; set; }
+    public int MenuItemID { get; set; }
 
-    public long OrderId { get; set; }
+    public int OrderID { get; set; }
 }

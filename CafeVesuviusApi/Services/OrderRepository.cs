@@ -27,13 +27,13 @@ namespace CafeVesuviusApi.Services
                 var orderMapper = new Mapper(orderConfig);
                 OrderDTO orderDto = orderMapper.Map<OrderDTO>(order);
                 
-                foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync())
+                foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderID == order.Id).ToListAsync())
                 {
                     var orderLineConfig = new MapperConfiguration(cfg => cfg.CreateMap<OrderLine, OrderLineDTO>());
                     var orderLineMapper = new Mapper(orderLineConfig);
                     OrderLineDTO orderLineDto = orderLineMapper.Map<OrderLineDTO>(line);
                     
-                    MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
+                    MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemID).SingleOrDefaultAsync();
                     if (menuItem == null) continue;
                     
                     orderLineDto.MenuItem = menuItem;
@@ -56,13 +56,13 @@ namespace CafeVesuviusApi.Services
             var orderMapper = new Mapper(orderConfig);
             OrderDTO orderDto = orderMapper.Map<OrderDTO>(order);
             
-            foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync())
+            foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderID == order.Id).ToListAsync())
             {
                 var orderLineConfig = new MapperConfiguration(cfg => cfg.CreateMap<OrderLine, OrderLineDTO>());
                 var orderLineMapper = new Mapper(orderLineConfig);
                 OrderLineDTO orderLineDto = orderLineMapper.Map<OrderLineDTO>(line);
                 
-                MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
+                MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemID).SingleOrDefaultAsync();
                 if (menuItem == null) continue;
                 
                 orderLineDto.MenuItem = menuItem;

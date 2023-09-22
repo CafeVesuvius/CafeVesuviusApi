@@ -95,8 +95,8 @@ public partial class CafeVesuviusContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Quantity).HasColumnType("Quantity");
-            entity.Property(e => e.MenuItemId).HasColumnName("MenuItemID");
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.MenuItemID).HasColumnName("MenuItemID");
+            entity.Property(e => e.OrderID).HasColumnName("OrderID");
 
             // entity.HasOne(d => d.MenuItem).WithMany(p => p.OrderLines)
             //     .HasForeignKey(d => d.MenuItemId)
@@ -104,7 +104,7 @@ public partial class CafeVesuviusContext : DbContext
             //     .HasConstraintName("FK_OrderLine_MenuItem");
 
             // entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
-            //     .HasForeignKey(d => d.OrderId)
+            //     .HasForeignKey(d => d.OrderID)
             //     .OnDelete(DeleteBehavior.ClientSetNull)
             //     .HasConstraintName("FK_OrderLine_Order");
         });
