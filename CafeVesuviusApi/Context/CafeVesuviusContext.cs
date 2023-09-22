@@ -148,7 +148,7 @@ public partial class CafeVesuviusContext : DbContext
             entity.Property(e => e.IpAddress).HasMaxLength(255);
             entity.Property(e => e.RefreshToken).HasMaxLength(255);
             entity.Property(e => e.Token).HasMaxLength(255);
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.UserID).HasColumnName("UserID");
 
             // entity.HasOne(d => d.User).WithMany(p => p.UserRefreshTokens)
             //     .HasForeignKey(d => d.UserId)

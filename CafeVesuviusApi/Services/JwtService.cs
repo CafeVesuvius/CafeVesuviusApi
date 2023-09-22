@@ -53,7 +53,7 @@ namespace CafeVesuviusApi.Services
                 IsInvalidated = false,
                 RefreshToken = refreshToken,
                 Token = tokenString,
-                UserId = userId
+                UserID = userId
             };
             await _context.UserRefreshTokens.AddAsync(userRefreshToken);
             await _context.SaveChangesAsync();

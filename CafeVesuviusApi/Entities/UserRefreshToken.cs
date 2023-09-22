@@ -34,7 +34,7 @@ namespace CafeVesuviusApi.Entities
         
         public bool IsInvalidated { get; set; }
 
-        public int UserId { get; set; }
+        public int UserID { get; set; }
         
         [ForeignKey("UserID")]
         public virtual AccessUser User { get; set; } = null!;
