@@ -54,7 +54,7 @@ public class ReservationRepository : IReservationRepository
         return reservations;
     }
     
-    public async Task<Reservation> GetReservation(long id)
+    public async Task<Reservation> GetReservation(int id)
     {
         Reservation? reservation = await _context.Reservations.FindAsync(id);
         if (reservation == null)
@@ -88,7 +88,7 @@ public class ReservationRepository : IReservationRepository
         return reservation;
     }
     
-    public async Task<bool> PutReservation(long id, Reservation reservation)
+    public async Task<bool> PutReservation(int id, Reservation reservation)
     {
         _context.Entry(reservation).State = EntityState.Modified;
 
@@ -106,7 +106,7 @@ public class ReservationRepository : IReservationRepository
         return true;
     }
     
-    public async Task<bool> DeleteReservation(long id)
+    public async Task<bool> DeleteReservation(int id)
     {
         Reservation? reservation = await _context.Reservations.FindAsync(id);
 
@@ -126,7 +126,7 @@ public class ReservationRepository : IReservationRepository
         return diningTable;
     }
     
-    public async Task<bool> PutDiningTable(long id, DiningTable diningTable)
+    public async Task<bool> PutDiningTable(int id, DiningTable diningTable)
     {
         _context.Entry(diningTable).State = EntityState.Modified;
 
@@ -144,7 +144,7 @@ public class ReservationRepository : IReservationRepository
         return true;
     }
     
-    public async Task<bool> DeleteDiningTable(long id)
+    public async Task<bool> DeleteDiningTable(int id)
     {
         DiningTable? diningTable = await _context.DiningTables.FindAsync(id);
 

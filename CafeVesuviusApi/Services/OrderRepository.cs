@@ -47,7 +47,7 @@ namespace CafeVesuviusApi.Services
         }
 
         //Get order by id
-        public async Task<OrderDTO> GetOrder(long id)
+        public async Task<OrderDTO> GetOrder(int id)
         {
             Order? order = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
             if (order == null) return await Task.FromResult<OrderDTO>(null); // Order wasn't found
@@ -72,7 +72,7 @@ namespace CafeVesuviusApi.Services
         }
 
         //Update order
-        public async Task<bool> UpdateOrder(long id, Order order)
+        public async Task<bool> UpdateOrder(int id, Order order)
         {
             _context.Entry(order).State = EntityState.Modified;
             try
@@ -93,7 +93,7 @@ namespace CafeVesuviusApi.Services
             return order;
         }
 
-        public async Task<bool> DeleteOrder(long id)
+        public async Task<bool> DeleteOrder(int id)
         {
             var order = await _context.Orders.FindAsync(id);
             if (order == null) return false;

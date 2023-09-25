@@ -63,7 +63,7 @@ namespace CafeVesuviusApi.Services
         }
 
         // Gets menu by id from the database, returns singular menu
-        public async Task<Menu> GetMenuById(long id)
+        public async Task<Menu> GetMenuById(int id)
         {
             Menu? menu = await _context.Menus.FindAsync(id);
             if (menu == null)
@@ -76,7 +76,7 @@ namespace CafeVesuviusApi.Services
         }
 
         // Updates a menu given a menu, returns true if succes and false if failure
-        public async Task<bool> UpdateMenu(long id, Menu menu)
+        public async Task<bool> UpdateMenu(int id, Menu menu)
         {
             _context.Entry(menu).State = EntityState.Modified;
 
@@ -94,7 +94,7 @@ namespace CafeVesuviusApi.Services
             return true;
         }
         
-        public async Task<bool> UpdateMenuItem(long id, MenuItem menuItem)
+        public async Task<bool> UpdateMenuItem(int id, MenuItem menuItem)
         {
             _context.Entry(menuItem).State = EntityState.Modified;
 
@@ -128,7 +128,7 @@ namespace CafeVesuviusApi.Services
             return menuItem;
         }
 
-        public async Task<bool> DeleteMenu(long id)
+        public async Task<bool> DeleteMenu(int id)
         {
             Menu? menu = await _context.Menus.FindAsync(id);
 
@@ -140,7 +140,7 @@ namespace CafeVesuviusApi.Services
             return true;
         }
         
-        public async Task<bool> DeleteMenuItem(long id)
+        public async Task<bool> DeleteMenuItem(int id)
         {
             MenuItem? menuItem = await _context.MenuItems.FindAsync(id);
 

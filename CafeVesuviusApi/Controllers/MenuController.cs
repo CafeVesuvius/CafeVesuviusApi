@@ -50,7 +50,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetMenuById(long id)
+        public async Task<IActionResult> GetMenuById(int id)
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
             Menu menu = await _menuRepository.GetMenuById(id);
@@ -61,7 +61,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMenu(long id, Menu menu)
+        public async Task<IActionResult> PutMenu(int id, Menu menu)
         {
             if (id != menu.Id)
             {
@@ -74,7 +74,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpPut("Item/{id}")]
-        public async Task<IActionResult> PutMenuItem(long id, MenuItem menuItem)
+        public async Task<IActionResult> PutMenuItem(int id, MenuItem menuItem)
         {
             if (id != menuItem.Id)
             {
@@ -107,7 +107,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMenu(long id)
+        public async Task<IActionResult> DeleteMenu(int id)
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
 
@@ -117,7 +117,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpDelete("Item/{id}")]
-        public async Task<IActionResult> DeleteMenuItem(long id)
+        public async Task<IActionResult> DeleteMenuItem(int id)
         {
             if (await _menuRepository.GetAllMenus() == null) return NotFound();
 
