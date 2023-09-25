@@ -95,6 +95,7 @@ public partial class CafeVesuviusContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Quantity).HasColumnType("Quantity");
+            entity.Property(e => e.Detail).HasMaxLength(255);
             entity.Property(e => e.MenuItemID).HasColumnName("MenuItemID");
             entity.Property(e => e.OrderID).HasColumnName("OrderID");
 

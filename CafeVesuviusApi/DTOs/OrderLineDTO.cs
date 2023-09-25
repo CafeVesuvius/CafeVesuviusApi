@@ -8,5 +8,7 @@ public class OrderLineDTO
 
     public byte Quantity { get; set; }
     
+    public string Detail { get; set; } = null!;
+    
     public virtual MenuItem MenuItem { get; set; } = null!;
 }
