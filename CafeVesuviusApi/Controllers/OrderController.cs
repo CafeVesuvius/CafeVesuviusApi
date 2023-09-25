@@ -61,6 +61,14 @@ namespace CafeVesuviusApi.Controllers
             await _orderRepository.AddOrder(order);
             return CreatedAtAction("GetOrder", new { id = order.Id }, order);
         }
+        
+        [HttpPost("OrderLine")]
+        public async Task<IActionResult> PostOrderLine(OrderLine orderLine)
+        {
+            if (await _orderRepository.GetOrders() == null) return NotFound();
+            await _orderRepository.AddOrderLine(orderLine);
+            return CreatedAtAction("GetOrder", new { id = orderLine.Id }, orderLine);
+        }
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]

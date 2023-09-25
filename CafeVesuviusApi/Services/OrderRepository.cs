@@ -92,6 +92,16 @@ namespace CafeVesuviusApi.Services
             await _context.SaveChangesAsync();
             return order;
         }
+        
+        public async Task<OrderLine> AddOrderLine(OrderLine orderLine)
+        {
+            if (!(_context.Orders?.Any(e => e.Id == orderLine.OrderID)).GetValueOrDefault())
+                return await Task.FromResult<OrderLine>(null);
+            
+            _context.OrderLines.Add(orderLine);
+            await _context.SaveChangesAsync();
+            return orderLine;
+        }
 
         public async Task<bool> DeleteOrder(int id)
         {

@@ -59,7 +59,7 @@ namespace CafeVesuviusApi.Services
             await _context.SaveChangesAsync();
             return new AuthResponse { Token = tokenString, RefreshToken = refreshToken,IsSuccess=true };
         }
-
+        
         private string GenerateRefreshToken()
         {
             var byteArray = new byte[64];
