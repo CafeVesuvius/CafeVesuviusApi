@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CafeVesuviusApi.Entities;
 using CafeVesuviusApi.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CafeVesuviusApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class OrderController : ControllerBase
     {
