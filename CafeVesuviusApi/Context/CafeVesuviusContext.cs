@@ -124,16 +124,16 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("ReservationDiningTable");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.DiningTableId).HasColumnName("DiningTableID");
-            entity.Property(e => e.ReservationId).HasColumnName("ReservationID");
+            entity.Property(e => e.DiningTableID).HasColumnName("DiningTableID");
+            entity.Property(e => e.ReservationID).HasColumnName("ReservationID");
 
             // entity.HasOne(d => d.DiningTable).WithMany(p => p.ReservationDiningTables)
-            //     .HasForeignKey(d => d.DiningTableId)
+            //     .HasForeignKey(d => d.DiningTableID)
             //     .OnDelete(DeleteBehavior.ClientSetNull)
             //     .HasConstraintName("FK_ReservationDiningTable_DiningTable");
 
             // entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationDiningTables)
-            //     .HasForeignKey(d => d.ReservationId)
+            //     .HasForeignKey(d => d.ReservationID)
             //     .OnDelete(DeleteBehavior.ClientSetNull)
             //     .HasConstraintName("FK_ReservationDiningTable_Reservation");
         });

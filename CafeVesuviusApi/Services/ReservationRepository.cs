@@ -25,9 +25,9 @@ public class ReservationRepository : IReservationRepository
             var reservationMapper = new Mapper(reservationConfig);
             ReservationDTO reservationDto = reservationMapper.Map<ReservationDTO>(reservation);
             
-            foreach (ReservationDiningTable rdt in await _context.ReservationDiningTables.Where(rdt => rdt.ReservationId == reservation.Id).ToListAsync())
+            foreach (ReservationDiningTable rdt in await _context.ReservationDiningTables.Where(rdt => rdt.ReservationID == reservation.Id).ToListAsync())
             {
-                DiningTable? diningTable = await _context.DiningTables.Where(item => item.Id == rdt.DiningTableId).SingleOrDefaultAsync();
+                DiningTable? diningTable = await _context.DiningTables.Where(item => item.Id == rdt.DiningTableID).SingleOrDefaultAsync();
                 if (diningTable == null) continue;
 
                 reservationDto.ReservationDiningTables.Add(diningTable);
@@ -48,7 +48,7 @@ public class ReservationRepository : IReservationRepository
         {
             foreach (Reservation reservation in reservations)
             {
-                reservation.ReservationDiningTables = await _context.ReservationDiningTables.Where(reservationDiningTable => reservationDiningTable.ReservationId == reservation.Id).ToListAsync();
+                reservation.ReservationDiningTables = await _context.ReservationDiningTables.Where(reservationDiningTable => reservationDiningTable.ReservationID == reservation.Id).ToListAsync();
             }
         }
         return reservations;
@@ -61,7 +61,7 @@ public class ReservationRepository : IReservationRepository
         {
             return reservation;
         }
-        reservation.ReservationDiningTables = await _context.ReservationDiningTables.Where(reservationDiningTable => reservationDiningTable.ReservationId == reservation.Id).ToListAsync();
+        reservation.ReservationDiningTables = await _context.ReservationDiningTables.Where(reservationDiningTable => reservationDiningTable.ReservationID == reservation.Id).ToListAsync();
 
         return reservation;
     }
@@ -76,8 +76,8 @@ public class ReservationRepository : IReservationRepository
             await _context.SaveChangesAsync();
 
             ReservationDiningTable reservationDiningTable = new();
-            reservationDiningTable.ReservationId = reservation.Id;
-            reservationDiningTable.DiningTableId = reservationTable.Id;
+            reservationDiningTable.ReservationID = reservation.Id;
+            reservationDiningTable.DiningTableID = reservationTable.Id;
             
             reservation.ReservationDiningTables.Add(reservationDiningTable);
 
@@ -172,8 +172,8 @@ public class ReservationRepository : IReservationRepository
             if (Math.Abs((reservation.Time - reservationTime).TotalHours) > 2) continue;
             foreach (ReservationDiningTable rdt in reservation.ReservationDiningTables)
             {
-                if (rdt.DiningTableId == 0) continue;
-                diningTables.RemoveAll(dt => dt.Id == rdt.DiningTableId);
+                if (rdt.DiningTableID == 0) continue;
+                diningTables.RemoveAll(dt => dt.Id == rdt.DiningTableID);
             }
         }
 
