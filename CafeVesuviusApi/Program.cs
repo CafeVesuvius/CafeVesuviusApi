@@ -73,20 +73,20 @@ builder.Services.AddAuthentication(authOptions =>
         jwtOptions.Events = new JwtBearerEvents();
         jwtOptions.Events.OnTokenValidated = async (context) =>
         {
-            var ipAddress = context.Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            var jwtService = context.Request.HttpContext.RequestServices.GetService<IJwtService>();
+            var authService = context.Request.HttpContext.RequestServices.GetService<IAuthenticationRepository>();
             var jwtToken = context.SecurityToken as JwtSecurityToken;
-            if (!await jwtService.IsTokenValid(jwtToken.RawData, ipAddress))
+            var ipAddress = context.Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            if (!await authService.IsTokenValid(jwtToken.RawData, ipAddress))
                 context.Fail("Invalid Token Details");
         };
     });
     
-builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
 builder.Services.AddDbContext<CafeVesuviusContext>(x => x.UseSqlServer(connectionString,builder =>
     {
         builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
     }));
-builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();

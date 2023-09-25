@@ -1,4 +1,4 @@
-﻿using CafeVesuviusApi.Context;
+using CafeVesuviusApi.Context;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,15 +11,16 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using CafeVesuviusApi.Entities;
 using CafeVesuviusApi.Models;
+using BC = BCrypt.Net.BCrypt;
 
 namespace CafeVesuviusApi.Services
 {
-    public class JwtService : IJwtService
+    public class AuthenticationRepository : IAuthenticationRepository
     {
         private readonly CafeVesuviusContext _context;
         private readonly IConfiguration _configuration;
 
-        public JwtService(CafeVesuviusContext context, IConfiguration configuration)
+        public AuthenticationRepository(CafeVesuviusContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
@@ -35,7 +36,8 @@ namespace CafeVesuviusApi.Services
         public async Task<AuthResponse> GetTokenAsync(AuthRequest authRequest, string ipAddress)
         {
             var user = _context.AccessUsers.FirstOrDefault(x => x.UserName.Equals(authRequest.UserName)
-            && x.UserPassword.Equals(authRequest.Password));
+            && BC.Verify(authRequest.Password, x.UserPassword));
+            
             if (user == null)
                 return await Task.FromResult<AuthResponse>(null);
             string tokenString = GenerateToken(user.UserName);
@@ -101,6 +103,14 @@ namespace CafeVesuviusApi.Services
             var isValid = _context.UserRefreshTokens.FirstOrDefault(x => x.Token == accessToken
             && x.IpAddress == ipAddress) != null;
             return await Task.FromResult(isValid);
+        }
+        
+        public async Task<AccessUser> AddUser(AccessUser accessUser)
+        {
+            accessUser.UserPassword = BC.HashPassword(accessUser.UserPassword, 12);
+            _context.AccessUsers.Add(accessUser);
+            await _context.SaveChangesAsync();
+            return accessUser;
         }
     }
 }
