@@ -12,17 +12,17 @@ namespace CafeVesuviusApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
 
-        public OrdersController(IOrderRepository orderRepository)
+        public OrderController(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
         }
 
         // GET: api/Orders
-        [HttpGet]
+        [HttpGet("All")]
         public async Task<IActionResult> GetOrders()
         {
             if (await _orderRepository.GetOrders() == null) return NotFound();
