@@ -7,7 +7,7 @@ public class ReservationDiningTable
 {
     public int Id { get; set; }
 
-    public long ReservationID { get; set; }
+    public int ReservationID { get; set; }
 
-    public long DiningTableID { get; set; }
+    public int DiningTableID { get; set; }
 }
