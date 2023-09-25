@@ -48,7 +48,7 @@ namespace CafeVesuviusApi.Services
             var userRefreshToken = new UserRefreshToken
             {
                 CreatedDate = DateTime.UtcNow,
-                ExpirationDate = DateTime.UtcNow.AddHours(24),
+                ExpirationDate = DateTime.UtcNow.AddDays(30),
                 IpAddress = ipAddress,
                 IsInvalidated = false,
                 RefreshToken = refreshToken,
@@ -85,7 +85,7 @@ namespace CafeVesuviusApi.Services
                     new Claim(ClaimTypes.NameIdentifier, userName)
 
                 }),
-                Expires = DateTime.UtcNow.AddDays(30),
+                Expires = DateTime.UtcNow.AddHours(24),
 
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes),
                SecurityAlgorithms.HmacSha256)
