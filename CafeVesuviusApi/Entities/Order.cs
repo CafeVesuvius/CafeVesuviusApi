@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CafeVesuviusApi.Models;
+namespace CafeVesuviusApi.Entities;
 
-public partial class Order
+public class Order
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     public string Name { get; set; } = null!;
     
-    public DateTime? Created { get; set; }
+    public DateTime? CreatedDate { get; set; }
     
-    public bool Completed { get; set; }
+    public bool IsCompleted { get; set; }
 
     public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
 }

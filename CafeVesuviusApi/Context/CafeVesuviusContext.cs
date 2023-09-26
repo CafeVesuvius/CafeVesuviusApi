@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using CafeVesuviusApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CafeVesuviusApi.Models;
+namespace CafeVesuviusApi.Context;
 
 public partial class CafeVesuviusContext : DbContext
 {
-    public CafeVesuviusContext()
-    {
-    }
-
     public CafeVesuviusContext(DbContextOptions<CafeVesuviusContext> options)
         : base(options)
     {
     }
+
+    public virtual DbSet<AccessUser> AccessUsers { get; set; }
 
     public virtual DbSet<DiningTable> DiningTables { get; set; }
 
@@ -29,11 +28,22 @@ public partial class CafeVesuviusContext : DbContext
 
     public virtual DbSet<ReservationDiningTable> ReservationDiningTables { get; set; }
 
+    public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionString");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AccessUser>(entity =>
+        {
+            entity.ToTable("AccessUser");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.UserName).HasMaxLength(255);
+            entity.Property(e => e.UserPassword).HasMaxLength(255);
+        });
+
         modelBuilder.Entity<DiningTable>(entity =>
         {
             entity.ToTable("DiningTable");
@@ -47,7 +57,7 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Menu", tb => tb.HasTrigger("trg_MenuUpdated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Changed).HasColumnType("datetime");
+            entity.Property(e => e.ChangedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Season).HasMaxLength(50);
         });
@@ -63,10 +73,10 @@ public partial class CafeVesuviusContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
 
-            //entity.HasOne(d => d.Menu).WithMany(p => p.MenuItems)
-            //    .HasForeignKey(d => d.MenuId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull)
-            //    .HasConstraintName("FK_MenuItem_Menu");
+            // entity.HasOne(d => d.Menu).WithMany(p => p.MenuItems)
+            //     .HasForeignKey(d => d.MenuId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_MenuItem_Menu");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -74,8 +84,9 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Order", tb => tb.HasTrigger("trg_OrderCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.IsCompleted).HasColumnType("IsCompleted");
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.Created).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<OrderLine>(entity =>
@@ -84,18 +95,19 @@ public partial class CafeVesuviusContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Quantity).HasColumnType("Quantity");
-            entity.Property(e => e.MenuItemId).HasColumnName("MenuItemID");
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.Detail).HasMaxLength(255);
+            entity.Property(e => e.MenuItemID).HasColumnName("MenuItemID");
+            entity.Property(e => e.OrderID).HasColumnName("OrderID");
 
-            //entity.HasOne(d => d.MenuItem).WithMany(p => p.OrderLines)
-            //    .HasForeignKey(d => d.MenuItemId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull)
-            //    .HasConstraintName("FK_OrderLine_MenuItem");
+            // entity.HasOne(d => d.MenuItem).WithMany(p => p.OrderLines)
+            //     .HasForeignKey(d => d.MenuItemId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_OrderLine_MenuItem");
 
-            //entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
-            //    .HasForeignKey(d => d.OrderId)
-            //    .OnDelete(DeleteBehavior.ClientSetNull)
-            //    .HasConstraintName("FK_OrderLine_Order");
+            // entity.HasOne(d => d.Order).WithMany(p => p.OrderLines)
+            //     .HasForeignKey(d => d.OrderID)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_OrderLine_Order");
         });
 
         modelBuilder.Entity<Reservation>(entity =>
@@ -103,9 +115,9 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Reservation", tb => tb.HasTrigger("trg_ReservationCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Time).HasColumnType("datetime");
-            entity.Property(e => e.Created).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<ReservationDiningTable>(entity =>
@@ -113,18 +125,36 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("ReservationDiningTable");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.DiningTableId).HasColumnName("DiningTableID");
-            entity.Property(e => e.ReservationId).HasColumnName("ReservationID");
+            entity.Property(e => e.DiningTableID).HasColumnName("DiningTableID");
+            entity.Property(e => e.ReservationID).HasColumnName("ReservationID");
 
             // entity.HasOne(d => d.DiningTable).WithMany(p => p.ReservationDiningTables)
-            //     .HasForeignKey(d => d.DiningTableId)
+            //     .HasForeignKey(d => d.DiningTableID)
             //     .OnDelete(DeleteBehavior.ClientSetNull)
             //     .HasConstraintName("FK_ReservationDiningTable_DiningTable");
 
             // entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationDiningTables)
-            //     .HasForeignKey(d => d.ReservationId)
+            //     .HasForeignKey(d => d.ReservationID)
             //     .OnDelete(DeleteBehavior.ClientSetNull)
             //     .HasConstraintName("FK_ReservationDiningTable_Reservation");
+        });
+
+        modelBuilder.Entity<UserRefreshToken>(entity =>
+        {
+            entity.ToTable("UserRefreshToken");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
+            entity.Property(e => e.IpAddress).HasMaxLength(255);
+            entity.Property(e => e.RefreshToken).HasMaxLength(255);
+            entity.Property(e => e.Token).HasMaxLength(255);
+            entity.Property(e => e.UserID).HasColumnName("UserID");
+
+            // entity.HasOne(d => d.User).WithMany(p => p.UserRefreshTokens)
+            //     .HasForeignKey(d => d.UserId)
+            //     .OnDelete(DeleteBehavior.ClientSetNull)
+            //     .HasConstraintName("FK_UserRefreshToken_AccessUser");
         });
 
         OnModelCreatingPartial(modelBuilder);

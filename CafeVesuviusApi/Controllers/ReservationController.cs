@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 using CafeVesuviusApi.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CafeVesuviusApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ReservationController : ControllerBase
     {
@@ -22,7 +24,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetReservation(long id)
+        public async Task<IActionResult> GetReservation(int id)
         {
             if (await _reservationRepository.GetReservations() == null) return NotFound();
             Reservation reservation = await _reservationRepository.GetReservation(id);
@@ -50,7 +52,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutReservation(long id, Reservation reservation)
+        public async Task<IActionResult> PutReservation(int id, Reservation reservation)
         {
             if (id != reservation.Id)
             {
@@ -63,7 +65,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReservation(long id)
+        public async Task<IActionResult> DeleteReservation(int id)
         {
             if (await _reservationRepository.GetReservations() == null) return NotFound();
 
@@ -97,7 +99,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpPut("DiningTable/{id}")]
-        public async Task<IActionResult> PutDiningTable(long id, DiningTable diningTable)
+        public async Task<IActionResult> PutDiningTable(int id, DiningTable diningTable)
         {
             if (id != diningTable.Id)
             {
@@ -110,7 +112,7 @@ namespace CafeVesuviusApi.Controllers
         }
         
         [HttpDelete("DiningTable/{id}")]
-        public async Task<IActionResult> DeleteDiningTable(long id)
+        public async Task<IActionResult> DeleteDiningTable(int id)
         {
             if (await _reservationRepository.GetDiningTables() == null) return NotFound();
 

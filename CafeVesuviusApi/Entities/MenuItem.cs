@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CafeVesuviusApi.Models;
+namespace CafeVesuviusApi.Entities;
 
-public partial class MenuItem
+public class MenuItem
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     public string Name { get; set; } = null!;
 
@@ -13,9 +13,9 @@ public partial class MenuItem
 
     public decimal UnitPrice { get; set; }
 
-    public bool Active { get; set; }
-    
+    public bool IsActive { get; set; }
+
     public string? ImagePath { get; set; }
 
-    public long MenuId { get; set; }
+    public int MenuId { get; set; }
 }

@@ -1,14 +1,15 @@
 ﻿using CafeVesuviusApi.DTOs;
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 
 namespace CafeVesuviusApi.Services
 {
     public interface IOrderRepository
     {
         Task<Order> AddOrder(Order order);
-        Task<bool> DeleteOrder(long id);
+        Task<OrderLine> AddOrderLine(OrderLine orderLine);
+        Task<bool> DeleteOrder(int id);
         Task<IEnumerable<OrderDTO>> GetOrders();
-        Task<OrderDTO> GetOrder(long id);
-        Task<bool> UpdateOrder(long id, Order order);
+        Task<OrderDTO> GetOrder(int id);
+        Task<bool> UpdateOrder(int id, Order order);
     }
 }

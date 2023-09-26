@@ -1,5 +1,6 @@
+using CafeVesuviusApi.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using CafeVesuviusApi.Models;
 
 namespace CafeVesuviusApi.Controllers
 {
@@ -8,7 +9,7 @@ namespace CafeVesuviusApi.Controllers
     public class ApiController : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<Menu>> GetFox()
+        public FileContentResult GetFox()
         {
             Byte[] b = System.IO.File.ReadAllBytes(@"Images/fox.jpg");
             return File(b, "image/jpeg");

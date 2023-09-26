@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CafeVesuviusApi.Models;
+namespace CafeVesuviusApi.Entities;
 
-public partial class DiningTable
+public class DiningTable
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
     
     public string Number { get; set; } = null!;
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using CafeVesuviusApi.Context;
 using CafeVesuviusApi.DTOs;
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CafeVesuviusApi.Services
@@ -26,13 +27,13 @@ namespace CafeVesuviusApi.Services
                 var orderMapper = new Mapper(orderConfig);
                 OrderDTO orderDto = orderMapper.Map<OrderDTO>(order);
                 
-                foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync())
+                foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderID == order.Id).ToListAsync())
                 {
                     var orderLineConfig = new MapperConfiguration(cfg => cfg.CreateMap<OrderLine, OrderLineDTO>());
                     var orderLineMapper = new Mapper(orderLineConfig);
                     OrderLineDTO orderLineDto = orderLineMapper.Map<OrderLineDTO>(line);
                     
-                    MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
+                    MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemID).SingleOrDefaultAsync();
                     if (menuItem == null) continue;
                     
                     orderLineDto.MenuItem = menuItem;
@@ -46,7 +47,7 @@ namespace CafeVesuviusApi.Services
         }
 
         //Get order by id
-        public async Task<OrderDTO> GetOrder(long id)
+        public async Task<OrderDTO> GetOrder(int id)
         {
             Order? order = await _context.Orders.SingleOrDefaultAsync(o => o.Id == id);
             if (order == null) return await Task.FromResult<OrderDTO>(null); // Order wasn't found
@@ -55,13 +56,13 @@ namespace CafeVesuviusApi.Services
             var orderMapper = new Mapper(orderConfig);
             OrderDTO orderDto = orderMapper.Map<OrderDTO>(order);
             
-            foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderId == order.Id).ToListAsync())
+            foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderID == order.Id).ToListAsync())
             {
                 var orderLineConfig = new MapperConfiguration(cfg => cfg.CreateMap<OrderLine, OrderLineDTO>());
                 var orderLineMapper = new Mapper(orderLineConfig);
                 OrderLineDTO orderLineDto = orderLineMapper.Map<OrderLineDTO>(line);
                 
-                MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemId).SingleOrDefaultAsync();
+                MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemID).SingleOrDefaultAsync();
                 if (menuItem == null) continue;
                 
                 orderLineDto.MenuItem = menuItem;
@@ -71,7 +72,7 @@ namespace CafeVesuviusApi.Services
         }
 
         //Update order
-        public async Task<bool> UpdateOrder(long id, Order order)
+        public async Task<bool> UpdateOrder(int id, Order order)
         {
             _context.Entry(order).State = EntityState.Modified;
             try
@@ -91,8 +92,18 @@ namespace CafeVesuviusApi.Services
             await _context.SaveChangesAsync();
             return order;
         }
+        
+        public async Task<OrderLine> AddOrderLine(OrderLine orderLine)
+        {
+            if (!(_context.Orders?.Any(e => e.Id == orderLine.OrderID)).GetValueOrDefault())
+                return await Task.FromResult<OrderLine>(null);
+            
+            _context.OrderLines.Add(orderLine);
+            await _context.SaveChangesAsync();
+            return orderLine;
+        }
 
-        public async Task<bool> DeleteOrder(long id)
+        public async Task<bool> DeleteOrder(int id)
         {
             var order = await _context.Orders.FindAsync(id);
             if (order == null) return false;

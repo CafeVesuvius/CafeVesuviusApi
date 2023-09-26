@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CafeVesuviusApi.Models;
+namespace CafeVesuviusApi.Entities;
 
-public partial class Reservation
+public class Reservation
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     public string Name { get; set; } = null!;
     
     public DateTime Time { get; set; }
     
-    public DateTime? Created { get; set; }
+    public DateTime? CreatedDate { get; set; }
 
     public virtual ICollection<ReservationDiningTable> ReservationDiningTables { get; set; } = new List<ReservationDiningTable>();
 }

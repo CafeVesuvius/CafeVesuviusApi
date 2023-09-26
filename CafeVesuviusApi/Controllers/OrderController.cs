@@ -5,24 +5,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CafeVesuviusApi.Models;
+using CafeVesuviusApi.Entities;
 using CafeVesuviusApi.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CafeVesuviusApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
 
-        public OrdersController(IOrderRepository orderRepository)
+        public OrderController(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
         }
 
         // GET: api/Orders
-        [HttpGet]
+        [HttpGet("All")]
         public async Task<IActionResult> GetOrders()
         {
             if (await _orderRepository.GetOrders() == null) return NotFound();
@@ -32,7 +34,7 @@ namespace CafeVesuviusApi.Controllers
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrder(long id)
+        public async Task<IActionResult> GetOrder(int id)
         {
             if (await _orderRepository.GetOrders() == null) return NotFound();
             var order = await _orderRepository.GetOrder(id);
@@ -43,7 +45,7 @@ namespace CafeVesuviusApi.Controllers
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(long id, Order order)
+        public async Task<IActionResult> PutOrder(int id, Order order)
         {
             if (id != order.Id) return BadRequest();
             if(!(await _orderRepository.UpdateOrder(id, order))) return BadRequest();
@@ -59,10 +61,18 @@ namespace CafeVesuviusApi.Controllers
             await _orderRepository.AddOrder(order);
             return CreatedAtAction("GetOrder", new { id = order.Id }, order);
         }
+        
+        [HttpPost("OrderLine")]
+        public async Task<IActionResult> PostOrderLine(OrderLine orderLine)
+        {
+            if (await _orderRepository.GetOrders() == null) return NotFound();
+            await _orderRepository.AddOrderLine(orderLine);
+            return CreatedAtAction("GetOrder", new { id = orderLine.Id }, orderLine);
+        }
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(long id)
+        public async Task<IActionResult> DeleteOrder(int id)
         {
             if (await _orderRepository.GetOrders() == null) return NotFound();
             if(!(await _orderRepository.DeleteOrder(id))) return BadRequest();

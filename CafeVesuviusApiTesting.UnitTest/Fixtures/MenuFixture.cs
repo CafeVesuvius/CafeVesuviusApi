@@ -1,4 +1,4 @@
-﻿using CafeVesuviusApi.Models;
+﻿using CafeVesuviusApi.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +14,8 @@ namespace CafeVesuviusApiTesting.UnitTest.Fixtures
             Id = 1,
             Name = "Menu1",
             Season = "Winter",
-            Active = true,
-            Changed = DateTime.Now,
+            IsActive = true,
+            ChangedDate = DateTime.Now,
             MenuItems = new List<MenuItem>
             {
                 new MenuItem
@@ -23,7 +23,7 @@ namespace CafeVesuviusApiTesting.UnitTest.Fixtures
                     Id=1,
                     Name = "MenuItem1",
                     Description = "MenuItem1",
-                    Active = true,
+                    IsActive = true,
                     UnitPrice = 100,
                     MenuId = 1,
                 }
