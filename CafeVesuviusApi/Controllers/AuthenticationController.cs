@@ -31,7 +31,7 @@ namespace CafeVesuviusApi.Controllers
             return Ok(token);
         }
         
-        [HttpPost("User"), Authorize]
+        [HttpPost("RegisterUser"), Authorize]
         public async Task<IActionResult> PostUser([FromBody] AuthRequest authRequest)
         {
             await _authenticationRepository.AddUser(new AccessUser() {UserName = authRequest.UserName, UserPassword = authRequest.Password});
