@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using CafeVesuviusApi.Entities;
 using CafeVesuviusApi.Models;
+using Microsoft.AspNetCore.Mvc;
 using BC = BCrypt.Net.BCrypt;
 
 namespace CafeVesuviusApi.Services
@@ -35,11 +36,10 @@ namespace CafeVesuviusApi.Services
 
         public async Task<AuthResponse> GetTokenAsync(AuthRequest authRequest, string ipAddress)
         {
-            var user = _context.AccessUsers.FirstOrDefault(x => x.UserName.Equals(authRequest.UserName)
-            && BC.Verify(authRequest.Password, x.UserPassword));
+            var user = _context.AccessUsers.FirstOrDefault(x => x.UserName.Equals(authRequest.UserName));
+            if (user == null || !BC.Verify(authRequest.Password, user.UserPassword))
+                return new AuthResponse() { IsSuccess = false, Reason = "Username or password is incorrect" };
             
-            if (user == null)
-                return await Task.FromResult<AuthResponse>(null);
             string tokenString = GenerateToken(user.UserName);
             string refreshToken = GenerateRefreshToken();
             return await SaveTokenDetails(ipAddress, user.Id, tokenString, refreshToken);
@@ -107,7 +107,7 @@ namespace CafeVesuviusApi.Services
         
         public async Task<AccessUser> AddUser(AccessUser accessUser)
         {
-            accessUser.UserPassword = BC.HashPassword(accessUser.UserPassword, 12);
+            accessUser.UserPassword = BC.HashPassword(accessUser.UserPassword);
             _context.AccessUsers.Add(accessUser);
             await _context.SaveChangesAsync();
             return accessUser;
