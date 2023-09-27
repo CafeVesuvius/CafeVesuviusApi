@@ -31,6 +31,13 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _orderRepository.GetOrders());
         }
 
+        [HttpGet("Incomplete")]
+        public async Task<IActionResult> GetIncompleteOrders()
+        {
+            if (await _orderRepository.GetIncompleteOrders() == null) return NotFound();
+            return Ok(await _orderRepository.GetIncompleteOrders());
+        }
+
 
         // GET: api/Orders/5
         [HttpGet("{id}")]

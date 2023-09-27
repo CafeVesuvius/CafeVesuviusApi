@@ -46,6 +46,38 @@ namespace CafeVesuviusApi.Services
             return orderDtos;
         }
 
+        //Get All incomplete orders from database
+
+        public async Task<IEnumerable<OrderDTO>> GetIncompleteOrders()
+        {
+            List<Order> orders = await _context.Orders.Where(order => !order.IsCompleted).ToListAsync();
+            List<OrderDTO> orderDtos = new List<OrderDTO>();
+
+            foreach (Order order in orders)
+            {
+                var orderConfig = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>().ForMember(x => x.OrderLines, opt => opt.Ignore()));
+                var orderMapper = new Mapper(orderConfig);
+                OrderDTO orderDto = orderMapper.Map<OrderDTO>(order);
+
+                foreach (OrderLine line in await _context.OrderLines.Where(line => line.OrderID == order.Id).ToListAsync())
+                {
+                    var orderLineConfig = new MapperConfiguration(cfg => cfg.CreateMap<OrderLine, OrderLineDTO>());
+                    var orderLineMapper = new Mapper(orderLineConfig);
+                    OrderLineDTO orderLineDto = orderLineMapper.Map<OrderLineDTO>(line);
+
+                    MenuItem? menuItem = await _context.MenuItems.Where(item => item.Id == line.MenuItemID).SingleOrDefaultAsync();
+                    if (menuItem == null) continue;
+
+                    orderLineDto.MenuItem = menuItem;
+                    orderDto.OrderLines.Add(orderLineDto);
+                }
+
+                orderDtos.Add(orderDto);
+            }
+
+            return orderDtos;
+        }
+
         //Get order by id
         public async Task<OrderDTO> GetOrder(int id)
         {
