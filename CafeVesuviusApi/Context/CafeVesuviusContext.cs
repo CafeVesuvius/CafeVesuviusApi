@@ -84,7 +84,7 @@ public partial class CafeVesuviusContext : DbContext
             entity.ToTable("Order", tb => tb.HasTrigger("trg_OrderCreated"));
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.IsCompleted).HasColumnType("IsCompleted");
+            entity.Property(e => e.IsCompleted).HasColumnType("bit");
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
         });

@@ -50,7 +50,7 @@ namespace CafeVesuviusApi.Services
 
         public async Task<IEnumerable<OrderDTO>> GetIncompleteOrders()
         {
-            List<Order> orders = await _context.Orders.Where(order => !order.IsCompleted).ToListAsync();
+            List<Order> orders = await _context.Orders.Where(order => order.IsCompleted == false).ToListAsync();
             List<OrderDTO> orderDtos = new List<OrderDTO>();
 
             foreach (Order order in orders)
