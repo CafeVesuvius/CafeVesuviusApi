@@ -1,5 +1,6 @@
 using CafeVesuviusApi.DTOs;
 using CafeVesuviusApi.Entities;
+using CafeVesuviusApi.Models;
 
 namespace CafeVesuviusApi.Services
 {
@@ -15,5 +16,6 @@ namespace CafeVesuviusApi.Services
         Task<DiningTable> PostDiningTable(DiningTable diningTable);
         Task<bool> PutDiningTable(int id, DiningTable diningTable);
         Task<bool> DeleteDiningTable(int id);
+        Task<AvailableResponse> IsAvailable(DateTime reservationTime);
     }
 }

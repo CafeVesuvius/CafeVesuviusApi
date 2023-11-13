@@ -12,7 +12,11 @@ var connectionString = builder.Configuration.GetConnectionString("Name=Connectio
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "MyAllowSpecificOrigins", builder => { builder.AllowAnyOrigin(); });
+    options.AddPolicy(name: "MyAllowSpecificOrigins", builder => { 
+        builder.AllowAnyOrigin(); 
+        builder.AllowAnyMethod(); 
+        builder.AllowAnyHeader(); 
+    });
 });
 
 builder.Services.AddControllers();
