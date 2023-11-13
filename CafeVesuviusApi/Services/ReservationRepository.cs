@@ -4,6 +4,7 @@ using CafeVesuviusApi.DTOs;
 using CafeVesuviusApi.Entities;
 using Microsoft.EntityFrameworkCore;
 using CafeVesuviusApi.Services.Utilities;
+using CafeVesuviusApi.Models;
 
 namespace CafeVesuviusApi.Services;
 
@@ -184,5 +185,16 @@ public class ReservationRepository : IReservationRepository
     {
         List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTables(reservationTime);
         return (diningTables.Any()) ? diningTables.PickRandom() : await Task.FromResult<DiningTable>(null);
+    }
+
+    public async Task<AvailableResponse> IsAvailable(DateTime reservationTime)
+    {
+        List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTables(reservationTime);
+
+        AvailableResponse availableResponse = new AvailableResponse();
+        availableResponse.IsAvailable = diningTables.Any();
+        availableResponse.Reason = availableResponse.IsAvailable ? "No reason given." : "Table is unavailable.";
+
+        return await Task.FromResult<AvailableResponse>(availableResponse);
     }
 }

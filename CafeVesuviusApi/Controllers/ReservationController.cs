@@ -87,7 +87,7 @@ namespace CafeVesuviusApi.Controllers
             if (await _reservationRepository.GetAvailableDiningTables(reservationTime) == null) return NotFound();
             return Ok(await _reservationRepository.GetAvailableDiningTables(reservationTime));
         }
-        
+
         [HttpPost("DiningTable")]
         public async Task<IActionResult> PostDiningTable(DiningTable diningTable)
         {
@@ -119,6 +119,13 @@ namespace CafeVesuviusApi.Controllers
             bool success = await _reservationRepository.DeleteDiningTable(id);
             if (!success) return NotFound();
             return NoContent();
+        }
+
+        [HttpGet("IsAvailable/{reservationTime}")]
+        public async Task<IActionResult> IsAvailable(DateTime reservationTime)
+        {
+            if (await _reservationRepository.GetAvailableDiningTables(reservationTime) == null) return NotFound();
+            return Ok(await _reservationRepository.IsAvailable(reservationTime));
         }
     }
 }
