@@ -12,7 +12,7 @@ var connectionString = builder.Configuration.GetConnectionString("Name=Connectio
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins, builder => { builder.AllowAnyOrigin(); });
+    options.AddPolicy(name: "MyAllowSpecificOrigins", builder => { builder.AllowAnyOrigin(); });
 });
 
 builder.Services.AddControllers();
@@ -103,7 +103,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors("MyAllowSpecificOrigins");
 
 app.UseAuthentication();
 
