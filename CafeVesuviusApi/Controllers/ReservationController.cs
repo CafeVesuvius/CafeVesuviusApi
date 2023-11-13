@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 namespace CafeVesuviusApi.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
     public class ReservationController : ControllerBase
     {
@@ -22,7 +21,8 @@ namespace CafeVesuviusApi.Controllers
         {
             _reservationRepository = reservationRepository;
         }
-        
+
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetReservation(int id)
         {
@@ -33,14 +33,16 @@ namespace CafeVesuviusApi.Controllers
 
             return Ok(reservation);
         }
-        
+
+        [Authorize]
         [HttpGet("All")]
         public async Task<IActionResult> GetReservations()
         {
             if (await _reservationRepository.GetReservations() == null) return NotFound();
             return Ok(await _reservationRepository.GetReservations());
         }
-        
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> PostReservation(Reservation reservation)
         {
@@ -50,7 +52,8 @@ namespace CafeVesuviusApi.Controllers
             }
             return Ok(await _reservationRepository.PostReservation(reservation));
         }
-        
+
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReservation(int id, Reservation reservation)
         {
@@ -63,7 +66,8 @@ namespace CafeVesuviusApi.Controllers
             if (!success) return NotFound();
             return NoContent();
         }
-        
+
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReservation(int id)
         {
@@ -73,14 +77,16 @@ namespace CafeVesuviusApi.Controllers
             if (!success) return NotFound();
             return NoContent();
         }
-        
+
+        [Authorize]
         [HttpGet("DiningTable/All")]
         public async Task<IActionResult> GetDiningTables()
         {
             if (await _reservationRepository.GetDiningTables() == null) return NotFound();
             return Ok(await _reservationRepository.GetDiningTables());
         }
-        
+
+        [Authorize]
         [HttpGet("DiningTable/Available/{reservationTime}")]
         public async Task<IActionResult> GetAvailableDiningTables(DateTime reservationTime)
         {
@@ -88,6 +94,7 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _reservationRepository.GetAvailableDiningTables(reservationTime));
         }
 
+        [Authorize]
         [HttpPost("DiningTable")]
         public async Task<IActionResult> PostDiningTable(DiningTable diningTable)
         {
@@ -97,7 +104,8 @@ namespace CafeVesuviusApi.Controllers
             }
             return Ok(await _reservationRepository.PostDiningTable(diningTable));
         }
-        
+
+        [Authorize]
         [HttpPut("DiningTable/{id}")]
         public async Task<IActionResult> PutDiningTable(int id, DiningTable diningTable)
         {
@@ -110,7 +118,8 @@ namespace CafeVesuviusApi.Controllers
             if (!success) return NotFound();
             return NoContent();
         }
-        
+
+        [Authorize]
         [HttpDelete("DiningTable/{id}")]
         public async Task<IActionResult> DeleteDiningTable(int id)
         {
