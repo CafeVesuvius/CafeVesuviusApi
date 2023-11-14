@@ -43,7 +43,7 @@ public class ReservationRepository : IReservationRepository
     public async Task<IEnumerable<Reservation>> GetReservationsByDateTime(DateTime from, DateTime? to)
     {
         List<Reservation>? reservations = await _context.Reservations.Where(reservation =>
-            reservation.Time.Date >= from.Date && reservation.Time.Date <= ((to.HasValue) ? to.Value.Date : from.Date)).ToListAsync();
+            reservation.Time >= from && reservation.Time <= ((to.HasValue) ? to : from)).ToListAsync();
         
         if (reservations.Count > 0)
         {
@@ -186,37 +186,37 @@ public class ReservationRepository : IReservationRepository
         DateTime startOfDay = reservationDate.ToDateTime(new TimeOnly(10, 0, 0));
         DateTime endOfDay = reservationDate.ToDateTime(new TimeOnly(22, 0, 0));
 
-        List<DiningTable> availableDiningTables = new List<DiningTable>();
         List<DiningTable> diningTables = (List<DiningTable>)await GetDiningTables();
         List<Reservation> reservationsByDay = (List<Reservation>)await GetReservationsByDateTime(startOfDay, endOfDay);
 
         foreach (Reservation reservation in reservationsByDay)
         {
             DateTime iDay = startOfDay;
-            bool availableFound = false;
+            bool hasAvailableTime = false;
 
-            while (iDay != endOfDay)
+            while (iDay < endOfDay)
             {
-                if (availableFound) break;
                 if (Math.Abs((reservation.Time - iDay).TotalHours) > 2)
                 {
-                    foreach (ReservationDiningTable rdt in reservation.ReservationDiningTables)
-                    {
-                        if (rdt.DiningTableID == 0) continue;
-                        DiningTable? diningTable = diningTables.Find(dt => dt.Id == rdt.DiningTableID);
+                    hasAvailableTime = true;
+                    break;
+                } 
+                else {    
+                    iDay = iDay.AddHours(2);
+                }
+            }
 
-                        if (diningTable != null) {
-                            availableDiningTables.Add(diningTable);
-                        }
-                    }
-                    availableFound = true;
-                };
-
-                iDay = iDay.AddHours(2);
+            if (!hasAvailableTime)
+            {
+                foreach (ReservationDiningTable rdt in reservation.ReservationDiningTables)
+                {
+                    if (rdt.DiningTableID == 0) continue;
+                    diningTables.RemoveAll(dt => dt.Id == rdt.DiningTableID);
+                }
             }
         }
 
-        return availableDiningTables;
+        return diningTables;
     }
 
     public async Task<DiningTable> GetAvailableDiningTable(DateTime reservationTime)
