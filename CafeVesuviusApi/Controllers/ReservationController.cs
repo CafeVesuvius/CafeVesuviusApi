@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CafeVesuviusApi.Entities;
 using CafeVesuviusApi.Services;
 using Microsoft.AspNetCore.Authorization;
+using CafeVesuviusApi.DTOs;
 
 namespace CafeVesuviusApi.Controllers
 {
@@ -28,8 +29,8 @@ namespace CafeVesuviusApi.Controllers
         {
             if (await _reservationRepository.GetReservations() == null) return NotFound();
             Reservation reservation = await _reservationRepository.GetReservation(id);
-            
-            if(reservation == null) return NotFound();
+
+            if (reservation == null) return NotFound();
 
             return Ok(reservation);
         }
@@ -130,11 +131,18 @@ namespace CafeVesuviusApi.Controllers
             return NoContent();
         }
 
-        [HttpGet("IsAvailable/{reservationTime}")]
-        public async Task<IActionResult> IsAvailable(DateTime reservationTime)
+        [HttpGet("IsAvailableToday/{reservationTime}")]
+        public async Task<IActionResult> IsAvailableToday(DateTime reservationTime)
         {
-            if (await _reservationRepository.GetAvailableDiningTables(reservationTime) == null) return NotFound();
-            return Ok(await _reservationRepository.IsAvailable(reservationTime));
+            if (await _reservationRepository.GetDiningTables() == null) return NotFound();
+            return Ok(await _reservationRepository.IsAvailableByDateOnly(DateOnly.FromDateTime(reservationTime)));
+        }
+
+        [HttpGet("IsAvailableAtTime/{reservationTime}")]
+        public async Task<IActionResult> IsAvailableAtTime(DateTime reservationTime)
+        {
+            if (await _reservationRepository.GetDiningTables() == null) return NotFound();
+            return Ok(await _reservationRepository.IsAvailableByDateTime(reservationTime));
         }
     }
 }

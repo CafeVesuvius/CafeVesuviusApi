@@ -181,19 +181,68 @@ public class ReservationRepository : IReservationRepository
         return diningTables;
     }
 
+    public async Task<IEnumerable<DiningTable>> GetAvailableDiningTablesByDate(DateOnly reservationDate)
+    {
+        DateTime startOfDay = reservationDate.ToDateTime(new TimeOnly(10, 0, 0));
+        DateTime endOfDay = reservationDate.ToDateTime(new TimeOnly(22, 0, 0));
+
+        List<DiningTable> availableDiningTables = new List<DiningTable>();
+        List<DiningTable> diningTables = (List<DiningTable>)await GetDiningTables();
+        List<Reservation> reservationsByDay = (List<Reservation>)await GetReservationsByDateTime(startOfDay, endOfDay);
+
+        foreach (Reservation reservation in reservationsByDay)
+        {
+            DateTime iDay = startOfDay;
+            bool availableFound = false;
+
+            while (iDay != endOfDay)
+            {
+                if (availableFound) break;
+                if (Math.Abs((reservation.Time - iDay).TotalHours) > 2)
+                {
+                    foreach (ReservationDiningTable rdt in reservation.ReservationDiningTables)
+                    {
+                        if (rdt.DiningTableID == 0) continue;
+                        DiningTable? diningTable = diningTables.Find(dt => dt.Id == rdt.DiningTableID);
+
+                        if (diningTable != null) {
+                            availableDiningTables.Add(diningTable);
+                        }
+                    }
+                    availableFound = true;
+                };
+
+                iDay = iDay.AddHours(2);
+            }
+        }
+
+        return availableDiningTables;
+    }
+
     public async Task<DiningTable> GetAvailableDiningTable(DateTime reservationTime)
     {
         List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTables(reservationTime);
         return (diningTables.Any()) ? diningTables.PickRandom() : await Task.FromResult<DiningTable>(null);
     }
 
-    public async Task<AvailableResponse> IsAvailable(DateTime reservationTime)
+    public async Task<AvailableResponse> IsAvailableByDateTime(DateTime reservationTime)
     {
         List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTables(reservationTime);
 
         AvailableResponse availableResponse = new AvailableResponse();
         availableResponse.IsAvailable = diningTables.Any();
-        availableResponse.Reason = availableResponse.IsAvailable ? "No reason given." : "Table is unavailable.";
+        availableResponse.Reason = availableResponse.IsAvailable ? "No reason given." : "Reservation is too busy at the time.";
+
+        return await Task.FromResult<AvailableResponse>(availableResponse);
+    }
+
+    public async Task<AvailableResponse> IsAvailableByDateOnly(DateOnly reservationDate)
+    {
+        List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTablesByDate(reservationDate);
+
+        AvailableResponse availableResponse = new AvailableResponse();
+        availableResponse.IsAvailable = diningTables.Any();
+        availableResponse.Reason = availableResponse.IsAvailable ? "No reason given." : "Reservation is too busy the whole day.";
 
         return await Task.FromResult<AvailableResponse>(availableResponse);
     }

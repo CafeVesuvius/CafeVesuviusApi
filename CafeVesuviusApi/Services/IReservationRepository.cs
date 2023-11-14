@@ -16,6 +16,7 @@ namespace CafeVesuviusApi.Services
         Task<DiningTable> PostDiningTable(DiningTable diningTable);
         Task<bool> PutDiningTable(int id, DiningTable diningTable);
         Task<bool> DeleteDiningTable(int id);
-        Task<AvailableResponse> IsAvailable(DateTime reservationTime);
+        Task<AvailableResponse> IsAvailableByDateTime(DateTime reservationTime);
+        Task<AvailableResponse> IsAvailableByDateOnly(DateOnly reservationDate);
     }
 }
