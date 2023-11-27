@@ -8,7 +8,7 @@ namespace CafeVesuviusApi.Models
     public class ReservationResponse
     {
         public string Name { get; set; }
-        public string DiningTableNumber { get; set; }
+        public List<string> DiningTableNumber { get; set; }
         public DateTime Time { get; set; }
     }
 }
