@@ -233,37 +233,37 @@ public class ReservationRepository : IReservationRepository
     {
         List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTables(reservation.Time);
 
-        List<DiningTable> selectedTables = new();
-        int peopleLeft = reservation.People;
+        return SortTable(diningTables, reservation.People);
+    }
 
+    public List<DiningTable> SortTable(List<DiningTable> diningTables, int peopleLeft)
+    {
+        List<DiningTable> selectedTables = new();
         while (peopleLeft > 0)
         {
-            if (diningTables.First(table => table.Seats == reservation.People) != null)
+            if (diningTables.First(table => table.Seats == peopleLeft) != null)
             {
+                selectedTables.Add(diningTables.First(table => table.Seats == peopleLeft));
                 peopleLeft = 0;
-                selectedTables.Add(diningTables.First(table => table.Seats == reservation.People));
             }
-            if (peopleLeft >= 6 && diningTables.First(table => table.Seats == 6) != null)
+            if (peopleLeft >= 6 && diningTables.Where(table => table.Seats == 6) != null)
             {
                 selectedTables.Add(diningTables.First(table => table.Seats == 6));
                 peopleLeft -= 6;
             }
-            if (peopleLeft >= 4 && diningTables.First(table => table.Seats == 4) != null)
+            if (peopleLeft >= 4 && diningTables.Where(table => table.Seats == 4) != null)
             {
                 selectedTables.Add(diningTables.First(table => table.Seats == 4));
                 peopleLeft -= 4;
             }
-            if (peopleLeft >= 2 && diningTables.First(table => table.Seats == 2) != null)
+            if (peopleLeft >= 2 && diningTables.Where(table => table.Seats == 2) != null)
             {
                 selectedTables.Add(diningTables.First(table => table.Seats == 2));
                 peopleLeft -= 2;
             }
+            if (peopleLeft == 0) break;
+            peopleLeft++;
         }
-        if(peopleLeft > 0)
-        {
-            return null;
-        }
-
         return selectedTables;
     }
 
