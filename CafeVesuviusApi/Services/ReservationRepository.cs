@@ -89,8 +89,10 @@ public class ReservationRepository : IReservationRepository
 
             bool status = await PutReservation(reservation.Id, reservation);
             if (!status) return await Task.FromResult<ReservationResponse>(null);
+
             List<string> diningTableNumbers = new List<string>();
             diningTables.ForEach(table => diningTableNumbers.Add(table.Number));
+
             return new ReservationResponse { Name = reservation.Name, DiningTableNumber = diningTableNumbers, Time = reservation.Time };
         }
 
