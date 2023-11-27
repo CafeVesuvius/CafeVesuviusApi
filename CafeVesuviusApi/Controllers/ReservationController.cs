@@ -95,7 +95,6 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _reservationRepository.GetAvailableDiningTables(reservationTime));
         }
 
-        [Authorize]
         [HttpPost("DiningTable")]
         public async Task<IActionResult> PostDiningTable(DiningTable diningTable)
         {
