@@ -243,21 +243,25 @@ public class ReservationRepository : IReservationRepository
                 peopleLeft = 0;
                 selectedTables.Add(diningTables.First(table => table.Seats == reservation.People));
             }
-            if (peopleLeft > 6)
+            if (peopleLeft >= 6 && diningTables.First(table => table.Seats == 6) != null)
             {
-                peopleLeft -= 6;
                 selectedTables.Add(diningTables.First(table => table.Seats == 6));
+                peopleLeft -= 6;
             }
-            if (peopleLeft < 4)
+            if (peopleLeft >= 4 && diningTables.First(table => table.Seats == 4) != null)
             {
-                peopleLeft -= 4;
                 selectedTables.Add(diningTables.First(table => table.Seats == 4));
+                peopleLeft -= 4;
             }
-            if (peopleLeft < 2)
+            if (peopleLeft >= 2 && diningTables.First(table => table.Seats == 2) != null)
             {
-                peopleLeft -= 2;
                 selectedTables.Add(diningTables.First(table => table.Seats == 2));
+                peopleLeft -= 2;
             }
+        }
+        if(peopleLeft > 0)
+        {
+            return null;
         }
 
         return selectedTables;
