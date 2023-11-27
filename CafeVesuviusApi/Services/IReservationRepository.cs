@@ -8,7 +8,7 @@ namespace CafeVesuviusApi.Services
     {
         Task<IEnumerable<ReservationDTO>> GetReservations();
         Task<Reservation> GetReservation(int id);
-        Task<Reservation> PostReservation(Reservation reservation);
+        Task<ReservationResponse> PostReservation(ReservationRequest reservationRequest);
         Task<bool> PutReservation(int id, Reservation reservation);
         Task<bool> DeleteReservation(int id);
         Task<IEnumerable<DiningTable>> GetDiningTables();

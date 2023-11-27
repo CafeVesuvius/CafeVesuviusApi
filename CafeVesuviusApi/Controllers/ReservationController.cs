@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CafeVesuviusApi.Entities;
+using CafeVesuviusApi.Models;
 using CafeVesuviusApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using CafeVesuviusApi.DTOs;
@@ -43,15 +44,14 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _reservationRepository.GetReservations());
         }
 
-        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> PostReservation(Reservation reservation)
+        public async Task<IActionResult> PostReservation([FromBody] ReservationRequest reservationRequest)
         {
             if (await _reservationRepository.GetReservations() == null)
             {
                 return Problem("Entity set 'CafeVesuviusContext.Menus'  is null.");
             }
-            return Ok(await _reservationRepository.PostReservation(reservation));
+            return Ok(await _reservationRepository.PostReservation(reservationRequest));
         }
 
         [Authorize]
@@ -95,6 +95,7 @@ namespace CafeVesuviusApi.Controllers
             return Ok(await _reservationRepository.GetAvailableDiningTables(reservationTime));
         }
 
+        [Authorize]
         [HttpPost("DiningTable")]
         public async Task<IActionResult> PostDiningTable(DiningTable diningTable)
         {

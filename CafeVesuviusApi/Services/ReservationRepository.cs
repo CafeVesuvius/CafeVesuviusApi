@@ -67,26 +67,30 @@ public class ReservationRepository : IReservationRepository
         return reservation;
     }
     
-    public async Task<Reservation> PostReservation(Reservation reservation)
+    public async Task<ReservationResponse> PostReservation(ReservationRequest reservationRequest)
     {
-        DiningTable reservationTable = await GetAvailableDiningTable(reservation.Time);
+        DiningTable diningTable = await GetAvailableDiningTable(reservationRequest.Time);
 
-        if (reservationTable.Id != 0)
+        if (diningTable.Id != 0)
         {
+            Reservation reservation = new Reservation { Name = reservationRequest.Name, People = reservationRequest.People, Time = reservationRequest.Time };
+
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
 
             ReservationDiningTable reservationDiningTable = new();
             reservationDiningTable.ReservationID = reservation.Id;
-            reservationDiningTable.DiningTableID = reservationTable.Id;
+            reservationDiningTable.DiningTableID = diningTable.Id;
             
             reservation.ReservationDiningTables.Add(reservationDiningTable);
 
             bool status = await PutReservation(reservation.Id, reservation);
-            if (!status) return await Task.FromResult<Reservation>(null);
+            if (!status) return await Task.FromResult<ReservationResponse>(null);
+
+            return new ReservationResponse { Name = reservation.Name, DiningTableNumber = diningTable.Number, Time = reservation.Time };
         }
-        else return await Task.FromResult<Reservation>(null);
-        return reservation;
+
+        return await Task.FromResult<ReservationResponse>(null);
     }
     
     public async Task<bool> PutReservation(int id, Reservation reservation)
