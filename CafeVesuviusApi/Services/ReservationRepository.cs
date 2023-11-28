@@ -193,8 +193,10 @@ public class ReservationRepository : IReservationRepository
 
     public async Task<IEnumerable<DiningTable>> GetAvailableDiningTablesByDate(DateOnly reservationDate)
     {
-        DateTime startOfDay = reservationDate.ToDateTime(new TimeOnly(10, 0, 0));
-        DateTime endOfDay = reservationDate.ToDateTime(new TimeOnly(22, 0, 0));
+        bool isWeekend = reservationDate.DayOfWeek >= DayOfWeek.Friday;
+
+        DateTime startOfDay = reservationDate.ToDateTime(new TimeOnly(isWeekend ? 12 : 16, 0, 0));
+        DateTime endOfDay = reservationDate.ToDateTime(new TimeOnly(isWeekend ? 23 : 22, 0, 0));
 
         List<DiningTable> diningTables = (List<DiningTable>)await GetDiningTables();
         List<Reservation> reservationsByDay = (List<Reservation>)await GetReservationsByDateTime(startOfDay, endOfDay);
