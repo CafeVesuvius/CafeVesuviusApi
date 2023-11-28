@@ -69,25 +69,31 @@ public class ReservationRepository : IReservationRepository
     
     public async Task<ReservationResponse> PostReservation(ReservationRequest reservationRequest)
     {
-        DiningTable diningTable = await GetAvailableDiningTable(reservationRequest.Time);
+        List<DiningTable> diningTables = await GetAvailableDiningTable(reservationRequest);
 
-        if (diningTable.Id != 0)
+        if (diningTables.Any(table => table.Id != 0))
         {
             Reservation reservation = new Reservation { Name = reservationRequest.Name, Phone = reservationRequest.Phone, People = reservationRequest.People, Time = reservationRequest.Time };
 
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
 
-            ReservationDiningTable reservationDiningTable = new();
-            reservationDiningTable.ReservationID = reservation.Id;
-            reservationDiningTable.DiningTableID = diningTable.Id;
-            
-            reservation.ReservationDiningTables.Add(reservationDiningTable);
+            foreach (DiningTable diningTable in diningTables)
+            {
+                ReservationDiningTable reservationDiningTable = new();
+                reservationDiningTable.ReservationID = reservation.Id;
+                reservationDiningTable.DiningTableID = diningTable.Id;
+
+                reservation.ReservationDiningTables.Add(reservationDiningTable);
+            }
 
             bool status = await PutReservation(reservation.Id, reservation);
             if (!status) return await Task.FromResult<ReservationResponse>(null);
 
-            return new ReservationResponse { Name = reservation.Name, DiningTableNumber = diningTable.Number, Time = reservation.Time };
+            List<string> diningTableNumbers = new List<string>();
+            diningTables.ForEach(table => diningTableNumbers.Add(table.Number));
+
+            return new ReservationResponse { Name = reservation.Name, DiningTableNumber = diningTableNumbers, Time = reservation.Time };
         }
 
         return await Task.FromResult<ReservationResponse>(null);
@@ -223,10 +229,42 @@ public class ReservationRepository : IReservationRepository
         return diningTables;
     }
 
-    public async Task<DiningTable> GetAvailableDiningTable(DateTime reservationTime)
+    public async Task<List<DiningTable>> GetAvailableDiningTable(ReservationRequest reservation)
     {
-        List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTables(reservationTime);
-        return (diningTables.Any()) ? diningTables.PickRandom() : await Task.FromResult<DiningTable>(null);
+        List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTables(reservation.Time);
+
+        List<DiningTable> selectedTables = new();
+        int peopleLeft = reservation.People;
+
+        while (peopleLeft > 0)
+        {
+            if (diningTables.First(table => table.Seats == reservation.People) != null)
+            {
+                peopleLeft = 0;
+                selectedTables.Add(diningTables.First(table => table.Seats == reservation.People));
+            }
+            if (peopleLeft >= 6 && diningTables.First(table => table.Seats == 6) != null)
+            {
+                selectedTables.Add(diningTables.First(table => table.Seats == 6));
+                peopleLeft -= 6;
+            }
+            if (peopleLeft >= 4 && diningTables.First(table => table.Seats == 4) != null)
+            {
+                selectedTables.Add(diningTables.First(table => table.Seats == 4));
+                peopleLeft -= 4;
+            }
+            if (peopleLeft >= 2 && diningTables.First(table => table.Seats == 2) != null)
+            {
+                selectedTables.Add(diningTables.First(table => table.Seats == 2));
+                peopleLeft -= 2;
+            }
+        }
+        if(peopleLeft > 0)
+        {
+            return null;
+        }
+
+        return selectedTables;
     }
 
     public async Task<AvailableResponse> IsAvailableByDateTime(DateTime reservationTime)
