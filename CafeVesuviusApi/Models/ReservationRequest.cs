@@ -11,6 +11,8 @@ namespace CafeVesuviusApi.Models
         [Required]
         public string Name { get; set; }
         [Required]
+        public string Phone { get; set; }
+        [Required]
         public byte People { get; set; }
         [Required]
         public DateTime Time { get; set; }

@@ -73,7 +73,7 @@ public class ReservationRepository : IReservationRepository
 
         if (diningTable.Id != 0)
         {
-            Reservation reservation = new Reservation { Name = reservationRequest.Name, People = reservationRequest.People, Time = reservationRequest.Time };
+            Reservation reservation = new Reservation { Name = reservationRequest.Name, Phone = reservationRequest.Phone, People = reservationRequest.People, Time = reservationRequest.Time };
 
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();

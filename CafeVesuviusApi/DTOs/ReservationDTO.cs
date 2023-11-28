@@ -8,6 +8,8 @@ public class ReservationDTO
 
     public string Name { get; set; } = null!;
 
+    public string Phone { get; set; } = null!;
+
     public byte People { get; set; }
 
     public DateTime Time { get; set; }

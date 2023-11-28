@@ -116,6 +116,7 @@ public partial class CafeVesuviusContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Phone).HasMaxLength(100);
             entity.Property(e => e.People).HasColumnType("People");
             entity.Property(e => e.Time).HasColumnType("datetime");
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
