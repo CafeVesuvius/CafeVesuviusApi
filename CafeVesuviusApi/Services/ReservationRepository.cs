@@ -232,39 +232,25 @@ public class ReservationRepository : IReservationRepository
     public async Task<List<DiningTable>> GetAvailableDiningTable(ReservationRequest reservation)
     {
         List<DiningTable> diningTables = (List<DiningTable>)await GetAvailableDiningTables(reservation.Time);
-
-        List<DiningTable> selectedTables = new();
+        List<DiningTable> selectedTables = new List<DiningTable>();
         int peopleLeft = reservation.People;
 
-        while (peopleLeft > 0)
+        while (peopleLeft > 0 && diningTables.Any()) 
         {
-            if (diningTables.First(table => table.Seats == reservation.People) != null)
+            Dictionary<int, int> tableDifferences = new Dictionary<int, int>();
+            foreach (var dt in diningTables)
             {
-                peopleLeft = 0;
-                selectedTables.Add(diningTables.First(table => table.Seats == reservation.People));
+                tableDifferences.Add(dt.Id, Math.Abs(peopleLeft - dt.Seats));
             }
-            if (peopleLeft >= 6 && diningTables.First(table => table.Seats == 6) != null)
-            {
-                selectedTables.Add(diningTables.First(table => table.Seats == 6));
-                peopleLeft -= 6;
-            }
-            if (peopleLeft >= 4 && diningTables.First(table => table.Seats == 4) != null)
-            {
-                selectedTables.Add(diningTables.First(table => table.Seats == 4));
-                peopleLeft -= 4;
-            }
-            if (peopleLeft >= 2 && diningTables.First(table => table.Seats == 2) != null)
-            {
-                selectedTables.Add(diningTables.First(table => table.Seats == 2));
-                peopleLeft -= 2;
-            }
-        }
-        if(peopleLeft > 0)
-        {
-            return null;
+
+            int diningTableId = tableDifferences.MinBy(kvp => kvp.Value).Key;
+            DiningTable diningTable = diningTables.First(table => table.Id == diningTableId);
+
+            selectedTables.Add(diningTable);
+            peopleLeft -= diningTable.Seats;
         }
 
-        return selectedTables;
+        return peopleLeft <= 0 ? selectedTables : await Task.FromResult<List<DiningTable>>(null);
     }
 
     public async Task<AvailableResponse> IsAvailableByDateTime(DateTime reservationTime)
