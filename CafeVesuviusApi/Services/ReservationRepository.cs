@@ -247,6 +247,7 @@ public class ReservationRepository : IReservationRepository
             DiningTable diningTable = diningTables.First(table => table.Id == diningTableId);
 
             selectedTables.Add(diningTable);
+            diningTables.RemoveAll(dt => dt.Id == diningTableId);
             peopleLeft -= diningTable.Seats;
         }
 
